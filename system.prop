@@ -1,0 +1,5 @@
+ro.secure=0
+ro.adb.secure=0
+sys.usb.config=mtp,adb
+persist.service.adb.enable=1
+service.adb.tcp.port=16666

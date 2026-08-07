@@ -1,0 +1,68 @@
+# =========================
+# Magisk Module Build Files
+# =========================
+
+# APK files
+*.apk
+
+# Magisk release packages
+*.zip
+
+# Build output directories
+build/
+out/
+dist/
+release/
+
+# =========================
+# Android / Gradle
+# =========================
+
+.gradle/
+.idea/
+*.iml
+local.properties
+
+# Android build outputs
+*/build/
+*/outputs/
+
+# =========================
+# Temporary files
+# =========================
+
+*.tmp
+*.temp
+*.log
+
+# Editor files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# =========================
+# Python / Scripts cache
+# =========================
+
+__pycache__/
+*.py[cod]
+
+# =========================
+# Native build
+# =========================
+
+*.o
+*.obj
+*.so.debug
+
+# =========================
+# Large files
+# =========================
+
+*.7z
+*.rar
+*.tar
+*.gz
