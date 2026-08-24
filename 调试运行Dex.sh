@@ -16,8 +16,8 @@ mkdir -p "${LOGDIR}"
 
 # 同步 Main.dex（与 service.sh 等效）
 if [ ! -f "${DEX_SRC}" ]; then
-  echo "! Main.dex 不存在: ${DEX_SRC}"
-  exit 1
+	echo "! Main.dex 不存在: ${DEX_SRC}"
+	exit 1
 fi
 cp -f "${DEX_SRC}" "${DEX_DST}"
 chmod 755 "${DEX_DST}"
@@ -25,18 +25,18 @@ echo "Main.dex 已同步: ${DEX_DST}"
 
 # 终止已运行的正式 daemon，避免双实例（与 service.sh 相同的 pid 检测逻辑）
 if [ -f "${zhang_config}/daemon.pid" ]; then
-  oldpid=$(cat "${zhang_config}/daemon.pid" 2>/dev/null)
-  if [ -n "${oldpid}" ] && [ -d "/proc/${oldpid}" ]; then
-    oldcmd=$(tr '\0' ' ' </proc/${oldpid}/cmdline 2>/dev/null)
-    case "${oldcmd}" in
-      *"${NICE_NAME}"*|*"${MAIN_CLASS}"*)
-        echo "已停止正式 daemon (pid ${oldpid})"
-        kill "${oldpid}" 2>/dev/null
-        sleep 1
-        ;;
-    esac
-  fi
-  rm -f "${zhang_config}/daemon.pid"
+	oldpid=$(cat "${zhang_config}/daemon.pid" 2>/dev/null)
+	if [ -n "${oldpid}" ] && [ -d "/proc/${oldpid}" ]; then
+		oldcmd=$(tr '\0' ' ' </proc/${oldpid}/cmdline 2>/dev/null)
+		case "${oldcmd}" in
+		*"${NICE_NAME}"* | *"${MAIN_CLASS}"*)
+			echo "已停止正式 daemon (pid ${oldpid})"
+			kill "${oldpid}" 2>/dev/null
+			sleep 1
+			;;
+		esac
+	fi
+	rm -f "${zhang_config}/daemon.pid"
 fi
 
 # 再兜底清理一次残留实例
@@ -53,9 +53,9 @@ echo "前台运行中，Ctrl+C 结束调试..."
 echo "----------------------------------------"
 
 exec /system/bin/app_process \
-  -Djava.class.path="${DEX_DST}" \
-  /system/bin \
-  --nice-name="${NICE_NAME}" \
-  "${MAIN_CLASS}" \
-  "${MODDIR}" \
-  "${ARG}"
+	-Djava.class.path="${DEX_DST}" \
+	/system/bin \
+	--nice-name="${NICE_NAME}" \
+	"${MAIN_CLASS}" \
+	"${MODDIR}" \
+	"${ARG}"

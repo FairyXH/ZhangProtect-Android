@@ -11,9 +11,9 @@ if [ -f /data/adb/Zhang/daemon.pid ]; then
 	if [ -n "${oldpid}" ] && [ -d "/proc/${oldpid}" ]; then
 		oldcmd=$(tr '\0' ' ' </proc/${oldpid}/cmdline 2>/dev/null)
 		case "${oldcmd}" in
-			*"io.github.fairyxh.zhangsystemdex.Main"*)
-				kill "${oldpid}" 2>/dev/null
-				;;
+		*"io.github.fairyxh.zhangsystemdex.Main"*)
+			kill "${oldpid}" 2>/dev/null
+			;;
 		esac
 	fi
 fi
