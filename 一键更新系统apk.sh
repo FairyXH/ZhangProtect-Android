@@ -14,6 +14,7 @@ android.permission.FOREGROUND_SERVICE"
 
 chmod +x ${MODDIR}/aapt
 for i in ${packs}; do
+	echo "正在处理：${i}"
 	if [ -s "${i}" ]; then
 		apkinfo=$(${MODDIR}/aapt dump badging "${i}" | grep 'package' | sed 's/ /\n/g' | grep 'name=' | grep -v 'compileSdkVersionCodename=' | sed $'s/\'//g')
 		apkinfo=${apkinfo#*=}
