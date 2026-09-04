@@ -1,0 +1,1 @@
+dpm set-device-owner com.remoteenv.collector/com.remoteenv.collector.nativecollector.CollectorDeviceAdminReceiver
