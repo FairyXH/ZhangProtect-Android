@@ -1,0 +1,2254 @@
+{
+  "configVersion": 90,
+  "detailLog": false,
+  "maxLogSize": 256,
+  "forceMountData": true,
+  "scope": {
+    "com.unionpay.tsmservice": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "org.telegram.messenger": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.tencent.tmgp.sgame": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "cn.com.chsi.chsiapp": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.tplink.tool": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.tmri.app.main": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.nowcasting.activity": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.sankuai.meituan": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.chaoxing.mobile": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "cn.com.langeasy.LangEasyLexis": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.sohu.inputmethod.sogouoem": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.tplink.ipc": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.tencent.androidqqmail": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.kugou.android.lite": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.byyoung.setting": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.gamma.scan": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "my.maya.android": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.openai.chatgpt": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.MobileTicket": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.suda.yzune.wakeupschedule": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.github.android": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "cn.xdf.roombox.app": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "me.ele": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.didjdk.adbhelper": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.xingin.xhs": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.cjapp.usbcamerapro": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.sky.zll": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.sukisu.ultra": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.github.metacubex.clash.alpha": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.xmgov.xmapp": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.instagram.android": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.icbc": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.deepseek.chat": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.yek.android.kfc.activitys": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.netease.gl": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.mfcloudcalculate.networkdisk": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.byyoung.extract": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.kywy.android": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.netease.micro.yysls": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.netease.sky": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.netease.x19": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.oasisfeng.island": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.xunmeng.pinduoduo": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.tencent.wework": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.shrey.androiddex": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.netease.uuremote": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "net.evecom.android.mztapp": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.microsoft.rdc.androidx": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.youdao.dict": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.ss.android.ugc.aweme": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.android": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.lixiangdong.textscanner": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.gotokeep.keep": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.unionpay": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "andes.oplus.documentsreader": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.zmzx.college.search": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.kookong.app": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.sonelli.juicessh": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.valvesoftware.android.steam.community": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.zzw.october": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.tencent.tmgp.cf": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.pupumall.customer": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.larus.nova": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.qiekj.user": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.jingdong.app.mall": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "make.more.r2d2.cellular_z": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "cn.xuexi.android": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.tmall.wireless": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.autonavi.minimap": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.taobao.idlefish": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "make.more.r2d2.cellular_pro": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.tencent.wemeet.app": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "youqu.android.todesk": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.sina.weibo": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "ua.com.streamsoft.pingtools": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.azure.authenticator": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.xt.retouch": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.baidu.netdisk": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.taobao.taobao": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "gr.nikolasspyr.integritycheck": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.netease.cloudmusic": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.ct.client": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.eg.android.AlipayGphone": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "cn.wps.moffice_eng": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.greenpoint.android.mc10086.activity": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.achievo.vipshop": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.hicorenational.antifraud": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.coloros.phonemanager": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.oplus.safecenter": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.oplus.pay": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.oplus.appplatform": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-WhiteList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": true
+    },
+    "com.finshell.wallet": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.coloros.translate": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.heytap.health": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.tencent.mm": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.microsoft.emmx": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.coloros.weather2": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.xiaomi.mico": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.coloros.compass2": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.coloros.note": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.tencent.mobileqq": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.coloros.calculator": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.coloros.calendar": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.coloros.alarmclock": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.coolapk.market": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.coloros.filemanager": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.coloros.soundrecorder": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.agc.gcam84": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    },
+    "com.oplus.melody": {
+      "applyHooks": [
+        "Maps scan",
+        "Intent queries",
+        "ID detections",
+        "API requests"
+      ],
+      "applyTemplates": [
+        "Zhang-Protect-BlackList"
+      ],
+      "enableAllHooks": true,
+      "excludeSystemApps": false,
+      "aggressiveFilter": true,
+      "extraAppList": [],
+      "extraMapsRules": [],
+      "extraQueryParamRules": [],
+      "useWhitelist": false
+    }
+  },
+  "templates": {
+    "Zhang-Protect-WhiteList": {
+      "appList": [
+        "com.miui.securitycenter",
+        "com.miui.guardprovider",
+        "com.huawei.hwid",
+        "com.tencent.mm",
+        "com.tencent.mobileqq",
+        "com.google.android.webview",
+        "com.microsoft.emmx",
+        "com.eg.android.AlipayGphone",
+        "com.miui.mediaeditor",
+        "com.miui.gallery",
+        "com.android.camera",
+        "com.oplus.appplatform",
+        "com.coloros.gallery3d",
+        "com.android.cts.priv.ctsshim",
+        "com.android.uwb.resources",
+        "com.android.internal.display.cutout.emulation.corner",
+        "com.android.adservices.api",
+        "com.android.internal.display.cutout.emulation.double",
+        "com.android.providers.telephony",
+        "com.android.dynsystem",
+        "com.android.healthconnect.controller",
+        "com.android.providers.calendar",
+        "com.android.systemui.overlay.fingerprint.anim.fy",
+        "com.android.systemui.overlay.fingerprint.anim.qy",
+        "com.android.systemui.overlay.fingerprint.anim.sw",
+        "com.android.systemui.overlay.fingerprint.anim.xw",
+        "com.android.providers.media",
+        "com.google.android.onetimeinitializer",
+        "com.android.health.connect.backuprestore",
+        "com.google.android.ext.shared",
+        "com.android.virtualmachine.res",
+        "com.android.wifi.resources.overlay.oplus",
+        "com.android.bankabc",
+        "com.android.launcher",
+        "com.android.systemui.oplus.res.overlay",
+        "com.android.documentsui",
+        "com.android.externalstorage",
+        "com.android.server.deviceconfig.resources",
+        "com.android.htmlviewer",
+        "com.android.safetycenter.resources.overlay",
+        "com.android.companiondevicemanager",
+        "com.android.mms.service",
+        "com.android.providers.downloads",
+        "com.android.systemui.overlay.fingerprint.anim.ccyh",
+        "com.android.systemui.overlay.fingerprint.anim.halo",
+        "com.android.systemui.overlay.fingerprint.anim.jslz",
+        "com.android.systemui.overlay.fingerprint.anim.none",
+        "com.android.systemui.overlay.fingerprint.anim.xklc",
+        "com.android.federatedcompute.services",
+        "com.android.bluetooth.oplus.overlay",
+        "com.google.android.verifier",
+        "com.google.android.configupdater",
+        "com.android.se.overlay.target",
+        "com.google.ar.core",
+        "com.android.safetycenter.resources",
+        "com.android.providers.downloads.ui",
+        "com.android.vending",
+        "com.android.pacprocessor",
+        "com.android.simappdialog",
+        "com.android.networkstack",
+        "com.android.connectivity.resources",
+        "com.android.internal.display.cutout.emulation.hole",
+        "com.android.internal.display.cutout.emulation.tall",
+        "com.android.modulemetadata",
+        "com.android.certinstaller",
+        "com.android.carrierconfig",
+        "com.google.android.marvin.talkback",
+        "com.android.internal.systemui.navbar.threebutton",
+        "com.android.wifi.dialog",
+        "com.android.contacts",
+        "com.android.egg",
+        "com.android.mms",
+        "com.android.mtp",
+        "com.android.nfc",
+        "com.android.ons",
+        "com.android.stk",
+        "com.android.backupconfirm",
+        "com.google.android.cellbroadcastreceiver.overlay",
+        "com.android.statementservice",
+        "com.google.android.gm",
+        "com.android.compos.payload",
+        "com.google.android.overlay.gmsconfig.common",
+        "com.android.settings.intelligence",
+        "com.android.systemui.PuiThemeQuickPanelIcon",
+        "com.google.android.cellbroadcastservice.overlay",
+        "com.android.systemui.accessibility.accessibilitymenu",
+        "com.android.carrierconfig.oplus.overlay",
+        "com.google.android.wifi.resources.overlay.common",
+        "com.android.providers.settings",
+        "com.android.sharedstoragebackup",
+        "com.android.oemextensions",
+        "com.android.printspooler",
+        "com.android.wifi.resources.overlay.common",
+        "com.android.dreams.basic",
+        "com.android.incallui",
+        "com.android.se",
+        "com.android.inputdevices",
+        "com.android.rkpdapp",
+        "com.android.bips",
+        "com.google.android.overlay.gmsconfig.nosafetycenter",
+        "com.android.settings.overlay.common",
+        "com.google.android.wifi.resources.overlay.target",
+        "com.android.cellbroadcastreceiver",
+        "com.google.android.webview",
+        "com.android.systemui.PuiThemeHorizontalBattery",
+        "com.google.android.contactkeys",
+        "com.android.SystemUIResOverlay",
+        "com.android.server.telecom",
+        "com.android.cellbroadcastservice",
+        "com.android.keychain",
+        "com.android.wifi.resources.overlay.target",
+        "com.android.systemui.PuiThemeBlur",
+        "com.google.android.gms",
+        "com.google.android.gsf",
+        "com.google.android.ims",
+        "com.android.wifi.resources",
+        "com.android.phone.overlay.common",
+        "com.android.carrierconfig.overlay.common",
+        "com.android.calllogbackup",
+        "com.android.systemui.overlay.common",
+        "com.android.cameraextensions",
+        "com.android.server.telecom.overlay.common",
+        "com.android.localtransport",
+        "com.android.systemui.PuiThemeBluetoothBatteryIcon141New",
+        "com.android.packageinstaller",
+        "com.android.carrierdefaultapp",
+        "com.android.credentialmanager",
+        "com.android.theme.font.notoserifsource",
+        "com.android.DeviceAsWebcam",
+        "com.android.proxyhandler",
+        "com.google.android.wifi.resources.overlay.pineapple",
+        "com.android.internal.display.cutout.emulation.waterfall",
+        "com.android.intentresolver",
+        "com.android.internal.systemui.navbar.transparent",
+        "com.android.providers.contactkeys",
+        "com.google.android.printservice.recommendation",
+        "com.android.systemui.PuiThemeStatusIcon",
+        "com.android.systemui.PuiThemeHorizontalBatteryColor",
+        "com.android.managedprovisioning",
+        "com.android.networkstack.tethering",
+        "com.google.android.accessibility.switchaccess",
+        "com.android.wifi.resources.overlay.pineapple",
+        "com.google.android.permissioncontroller.overlay.oplus",
+        "com.android.role.notes.enabled",
+        "com.android.carrierconfig.overlay.product",
+        "com.android.wallpaper.livepicker",
+        "com.android.cellbroadcastreceiver.module",
+        "com.android.apps.tag",
+        "com.android.appsearch.apk",
+        "com.android.safetycenter.styles.overlay",
+        "com.android.storagemanager",
+        "com.android.bookmarkprovider",
+        "com.android.settings",
+        "com.google.android.networkstack.overlay",
+        "com.google.android.projection.gearhead",
+        "com.google.android.safetycore",
+        "com.android.cts.ctsshim",
+        "com.android.microdroid.empty_payload",
+        "com.android.vpndialogs",
+        "com.android.connectivity.resources.overlay.oplus",
+        "com.android.phone",
+        "com.android.shell",
+        "com.android.sdksandbox",
+        "com.android.wallpaperbackup",
+        "com.android.providers.blockednumber",
+        "com.android.providers.userdictionary",
+        "com.android.providers.media.module",
+        "com.android.hotspot2.osulogin",
+        "com.android.companiondevicemanager.auto_generated_characteristics_rro",
+        "com.android.internal.systemui.navbar.gestural",
+        "com.android.location.fused",
+        "com.android.systemui",
+        "com.android.bluetoothmidiservice",
+        "com.android.permissioncontroller",
+        "com.android.traceur",
+        "com.android.ondevicepersonalization.services",
+        "com.android.bluetooth",
+        "com.android.providers.contacts",
+        "com.android.captiveportallogin",
+        "com.android.devicelockcontroller",
+        "com.android.cellbroadcastreceiver.overlay.common",
+        "youqu.android.todesk",
+        "com.sohu.inputmethod.sogouoem",
+        "com.baidu.input_oppo",
+        "com.chaoxing.mobile",
+        "com.netease.x19",
+        "com.netease.yyslscn",
+        "com.tencent.tmgp.cf",
+        "com.mojang.minecraftpe",
+        "com.tencent.tmgp.sgame",
+        "com.tencent.tmgp.pubgmhd"
+      ],
+      "isWhitelist": true,
+      "mapsRules": [],
+      "queryParamRules": []
+    },
+    "Zhang-Protect-BlackList": {
+      "appList": [
+        "ac.no.screenshot",
+        "cc.csxcl.fkcoloros",
+        "com.flass.layoutinspect",
+        "com.github.tianma8023.xposed.smscode",
+        "com.install.appinstall.xl",
+        "com.jiguro.fuckgoogle",
+        "com.junge.algorithmAide",
+        "com.luckyzyx.luckytool",
+        "com.my.televip",
+        "com.omarea.vtools",
+        "com.rosan.dhizuku.api.xposed",
+        "com.tsng.hidemyapplist",
+        "com.wecom.padbridge",
+        "com.wengui.hook",
+        "com.xiyunmn.puredupan.hook",
+        "com.yuexin.panel",
+        "com.zzw.october.hooker",
+        "dev.ujhhgtg.wekit",
+        "github.tornaco.android.thanos",
+        "io.github.a13e300.fusefixer",
+        "io.github.dopee.douyinfilter",
+        "io.github.fairyxh.VirtualEnv",
+        "io.github.fairyxh.WeWorkJSLoader",
+        "io.github.fairyxh.ZhangSystemHook",
+        "io.github.fairyxh.volumelimiter",
+        "io.github.khalil212002.unmockgps",
+        "io.github.moranyue.nodhcphostname",
+        "io.github.proify.lyricon",
+        "io.github.proify.lyricon.cmprovider",
+        "io.github.proify.lyricon.kgprovider",
+        "io.github.proify.lyricon.qmprovider",
+        "io.github.qauxv",
+        "io.github.zensu357.camswap",
+        "io.github.zhou6514ctrl.virtualregion",
+        "io.kazutoiris.pure.shot",
+        "io.mo.glassmic",
+        "me.dartcv.nuke",
+        "me.hd.wauxv",
+        "me.neko.lotus",
+        "me.yfishyon.fire",
+        "one.yufz.hmspush",
+        "org.frknkrc44.hma_oss",
+        "org.xiyu.starx",
+        "top.hookvip.pro",
+        "tornaco.apps.shortx",
+        "yuu.xposed",
+        "com.junge.algorithmAidePro",
+        "com.way.facebiometricfix",
+        "io.github.Rillwyn.maceditor",
+        "io.github.ldxm666.mapadkiller",
+        "io.github.liuran001.mmliquidglass",
+        "me.yun.lspilot",
+        "com.sky.ant.plus",
+        "dev.jev.wechatmood",
+        "com.SplashScreenAdvanced.xposedmodule",
+        "com.roro.tablethook",
+        "com.web.czero",
+        "io.github.vstory.apperrors",
+        "io.github.wauxv.v1",
+        "moe.notice.filter",
+        "org.lsposed.lspatch",
+        "io.github.vvb2060.mahoshojo",
+        "icu.nullptr.applistdetector",
+        "com.byxiaorun.detector",
+        "com.zhenxi.hunter",
+        "luna.safe.luna",
+        "icu.nullptr.nativetest",
+        "io.github.huskydg.memorydetector",
+        "me.garfieldhan.holmes",
+        "bin.mt.plus",
+        "bin.mt.termex",
+        "org.lsposed.manager",
+        "com.remoteenv.collector",
+        "org.localsend.localsend_app",
+        "com.mojang.minecraftpe",
+        "com.reqable.android",
+        "com.ai.assistance.operit"
+      ],
+      "isWhitelist": false,
+      "mapsRules": [],
+      "queryParamRules": []
+    }
+  }
+}

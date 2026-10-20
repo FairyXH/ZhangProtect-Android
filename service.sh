@@ -10,6 +10,48 @@ MAIN_CLASS="io.github.fairyxh.zhangsystemdex.Main"
 mkdir -p "${zhang_config}"
 mkdir -p "${LOGDIR}"
 
+# =============================================================
+# 内置 Python 运行时（整合自 Python_for_Android-3.13.5 模块）
+#
+#   - 运行时包：${MODDIR}/Python.zip（解压后约 261MB）
+#   - 释放位置：/data/Python（与独立 Python 模块一致，便于复用与排障）
+#   - 入口：/data/Python/bin/python3.13（tools/python3 包装脚本会设好
+#     PYTHONHOME / LD_LIBRARY_PATH 后 exec 它）
+#
+#   仅在 /data/Python 缺失时解压（首次开机），之后不再重复消耗 IO。
+# =============================================================
+PYTHON_DIR="/data/Python"
+PYTHON_ZIP="${MODDIR}/Python.zip"
+
+ensure_python() {
+	[ -x "${PYTHON_DIR}/bin/python3.13" ] && return 0
+
+	if [ ! -f "${PYTHON_ZIP}" ]; then
+		echo "ZhangSystemDex: Python.zip not found (${PYTHON_ZIP}), skip Python setup"
+		return 1
+	fi
+
+	# 等待 /data 就绪
+	i=0
+	while [ ! -d /data ] && [ "$i" -lt 30 ]; do
+		sleep 1
+		i=$((i + 1))
+	done
+
+	echo "ZhangSystemDex: extracting Python runtime -> ${PYTHON_DIR} ..."
+	mkdir -p /data
+	if unzip -o "${PYTHON_ZIP}" -d /data >/dev/null 2>&1; then
+		chmod -R 755 "${PYTHON_DIR}" 2>/dev/null
+		echo "ZhangSystemDex: Python runtime ready (${PYTHON_DIR})"
+	else
+		echo "! ZhangSystemDex: failed to extract ${PYTHON_ZIP}"
+		return 1
+	fi
+	return 0
+}
+
+ensure_python
+
 # 初始化 config.conf（配置根 + 日志总开关，Dex 首次运行也会兜底生成）
 if [ ! -f "${MODDIR}/config.conf" ]; then
 	echo "root_dir=/data/adb/Zhang" >"${MODDIR}/config.conf"

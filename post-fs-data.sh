@@ -1,3 +1,4 @@
+#!/system/bin/sh
 MODDIR=${0%/*}
 rm -rf /data/system/package_cache/
 rm -rf /data/magisk_backup_*

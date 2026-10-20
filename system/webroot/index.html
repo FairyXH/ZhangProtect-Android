@@ -1,0 +1,2801 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#f2f2f7" />
+<title>ZhangProtect 控制台</title>
+<style>
+  :root{
+    --bg:#f2f2f7; --grouped:#ffffff; --card:#ffffff; --card2:#f7f7fa;
+    --fg:#1c1c1e; --dim:#8e8e93; --dim2:#c7c7cc;
+    --line:rgba(60,60,67,.14); --sep:rgba(60,60,67,.10);
+    --acc:#0a84ff; --acc2:#007aff; --ok:#34c759; --warn:#ff9f0a; --err:#ff3b30;
+    --tabh:52px; --tabpad:env(safe-area-inset-bottom,0px);
+    --hdr:env(safe-area-inset-top,0px);
+    --radius:12px;
+    color-scheme:light dark;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#000000; --grouped:#1c1c1e; --card:#1c1c1e; --card2:#2c2c2e;
+      --fg:#ffffff; --dim:#8e8e93; --dim2:#48484a;
+      --line:rgba(84,84,88,.36); --sep:rgba(84,84,88,.30);
+      --acc:#0a84ff; --acc2:#0a84ff;
+    }
+    meta[name=theme-color]{} 
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--fg);
+    font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Noto Sans SC",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:calc(var(--tabh) + var(--tabpad) + 8px);
+  }
+  /* ---------- Nav bar (large title) ---------- */
+  .navbar{position:sticky;top:0;z-index:20;background:var(--bg);
+    padding:calc(var(--hdr) + 6px) 0 0;transition:box-shadow .2s}
+  .navbar.scrolled{box-shadow:0 1px 0 var(--sep)}
+  .navbar .title{font-size:30px;font-weight:700;letter-spacing:-.4px;padding:2px 20px 8px}
+  .navbar .subt{color:var(--dim);font-size:12px;padding:0 20px 8px;word-break:break-all;
+    margin-top:-6px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .navbar .actions{display:flex;gap:8px;padding:0 16px 10px;flex-wrap:wrap}
+  .navstatus{display:none;margin:0 16px 10px;padding:10px 14px;border-radius:12px;
+    background:rgba(10,132,255,.12);color:var(--acc2);font-size:13px;line-height:1.5}
+  .navstatus.err{background:rgba(255,59,48,.12);color:#ff3b30}
+  /* ---------- Buttons (iOS style) ---------- */
+  button{font:inherit;-webkit-appearance:none;border:none;background:none;color:var(--acc2);
+    cursor:pointer;padding:6px 2px}
+  .btn{display:inline-flex;align-items:center;gap:6px;justify-content:center;
+    height:34px;padding:0 16px;border-radius:999px;font-size:15px;font-weight:600;
+    background:var(--card2);color:var(--fg);border:1px solid var(--line);
+    transition:opacity .15s,transform .08s}
+  .btn:active{transform:scale(.96)}
+  .btn.primary{background:var(--acc2);color:#fff;border-color:transparent}
+  .btn.ghost{background:transparent}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn.sm{height:30px;font-size:13px;padding:0 12px}
+  main{padding:0 0 12px;max-width:720px;margin:0 auto}
+  /* ---------- Grouped list ---------- */
+  .section{padding:0 16px;margin-bottom:22px}
+  .section>.stitle{font-size:13px;color:var(--dim);text-transform:uppercase;
+    letter-spacing:.4px;padding:0 4px 7px;font-weight:500}
+  .section>.sfoot{font-size:12.5px;color:var(--dim);padding:7px 4px 0;line-height:1.45}
+  .list{background:var(--grouped);border-radius:var(--radius);overflow:hidden}
+  .cell{display:flex;align-items:center;gap:12px;padding:11px 16px;position:relative;
+    background:var(--grouped)}
+  .cell+.cell::before{content:"";position:absolute;left:16px;right:0;top:0;
+    height:1px;background:var(--sep);transform:scaleY(.6)}
+  .cell .ic{width:29px;height:29px;border-radius:7px;flex:0 0 auto;display:flex;
+    align-items:center;justify-content:center;font-size:16px;color:#fff}
+  .cell .body{flex:1;min-width:0}
+  .cell .k{font-size:15px;font-weight:500;word-break:break-word}
+  .cell .k.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px}
+  .cell .d{color:var(--dim);font-size:12.5px;margin-top:2px;line-height:1.35}
+  .cell.danger .k{color:var(--warn)}
+  .cell.danger .d::before{content:"⚠️ ";}
+  .cell.modified .k::after{content:" ●";color:var(--acc2);font-size:10px;vertical-align:middle}
+  .cell .val{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+  .cell input.vin{width:74px;text-align:right;background:var(--card2);border:1px solid var(--line);
+    color:var(--fg);border-radius:8px;padding:6px 9px;font-size:15px;
+    font-family:ui-monospace,monospace}
+  .cell .unit{color:var(--dim);font-size:13px;min-width:18px}
+  /* ---------- iOS Switch ---------- */
+  .sw{position:relative;width:51px;height:31px;flex:0 0 auto}
+  .sw input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;z-index:2}
+  .sw i{position:absolute;inset:0;background:var(--dim2);border-radius:999px;transition:background .2s}
+  .sw i::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+  .sw input:checked + i{background:var(--ok)}
+  .sw input:checked + i::after{transform:translateX(20px)}
+  /* ---------- Sub panel / stats ---------- */
+  .panel{background:var(--card2);padding:12px 16px}
+  .panel .hint{color:var(--dim);font-size:12.5px;line-height:1.45}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .stat{background:var(--grouped);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+  .stat .k{color:var(--dim);font-size:11.5px}
+  .stat .v{font-size:16px;margin-top:2px;font-family:ui-monospace,monospace}
+  textarea{width:100%;min-height:112px;background:var(--grouped);border:1px solid var(--line);
+    color:var(--fg);border-radius:10px;padding:10px;font-family:ui-monospace,monospace;
+    font-size:13px;-webkit-appearance:none}
+  .panel .pbtns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  /* ---------- Tab bar ---------- */
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:50;
+    height:calc(var(--tabh) + var(--tabpad));padding-bottom:var(--tabpad);
+    background:rgba(249,249,249,.94);backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);border-top:.5px solid var(--sep);
+    display:flex;align-items:stretch}
+  @media (prefers-color-scheme:dark){
+    .tabbar{background:rgba(22,22,24,.92)}
+  }
+  .tabbar .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:2px;color:var(--dim);font-size:10px;font-weight:500;cursor:pointer;
+    padding-top:6px;transition:color .15s;-webkit-user-select:none;user-select:none}
+  .tabbar .tab .tico{font-size:22px;line-height:1;position:relative}
+  .tabbar .tab.active{color:var(--acc2)}
+  .tabbar .tab .badge{position:absolute;top:-4px;right:-9px;min-width:16px;height:16px;
+    padding:0 4px;border-radius:8px;background:var(--err);color:#fff;font-size:10px;
+    line-height:16px;text-align:center;font-weight:600}
+  /* ---------- Toast ---------- */
+  .toast{position:fixed;left:50%;bottom:calc(var(--tabh) + var(--tabpad) + 16px);
+    transform:translateX(-50%) translateY(8px);z-index:80;
+    background:rgba(40,40,44,.94);backdrop-filter:blur(10px);color:#fff;padding:11px 20px;
+    border-radius:14px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;
+    transition:.25s;max-width:86vw;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.28)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.err{background:rgba(255,59,48,.96)} .toast.ok{background:rgba(52,199,89,.96)}
+  /* ---------- Utils ---------- */
+  .empty{color:var(--dim);padding:26px 16px;text-align:center;font-size:14px;line-height:1.6}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .pane{display:none}
+  .pane.active{display:block;animation:fade .22s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .seg{display:flex;background:var(--card2);border-radius:10px;padding:3px;margin:0 16px 16px}
+  .seg .s{flex:1;text-align:center;padding:6px 0;font-size:13.5px;font-weight:600;border-radius:8px;
+    color:var(--dim);cursor:pointer;transition:.15s}
+  .seg .s.on{background:var(--grouped);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .pill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:999px}
+  .pill.on{background:rgba(52,199,89,.16);color:var(--ok)}
+  .pill.off{background:rgba(142,142,147,.18);color:var(--dim)}
+  .pill.warn{background:rgba(255,159,10,.18);color:var(--warn)}
+  /* ---------- 概览：实时指示与模块状态 ---------- */
+  .live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;
+    background:var(--ok);margin-left:6px;vertical-align:middle;animation:livepulse 1.6s ease-in-out infinite}
+  .live-dot.stale{background:var(--warn);animation:none}
+  @keyframes livepulse{0%,100%{opacity:.35}50%{opacity:1}}
+  .stat .v.sm{font-size:12.5px}
+  .ovmod{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--dim2)}
+  .ovmod:last-child{border-bottom:0}
+  .ovmod .dot{width:9px;height:9px;border-radius:50%;flex:0 0 9px}
+  .ovmod .dot.run{background:var(--ok);box-shadow:0 0 0 3px rgba(52,199,89,.18)}
+  .ovmod .dot.on{background:var(--warn)}
+  .ovmod .dot.stop{background:var(--dim2)}
+  .ovmod .mbody{flex:1;min-width:0}
+  .ovmod .mk{font-size:14.5px;font-weight:600}
+  .ovmod .md{font-size:12px;color:var(--dim);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ovmod .mtag{font-size:11px;color:var(--dim);font-family:ui-monospace,monospace;text-align:right}
+  .ovmod .mcount{font-size:11px;color:var(--acc);font-family:ui-monospace,monospace;margin-top:1px}
+  /* ---------- Clean tab ---------- */
+  .cleanhead{background:var(--grouped);border-radius:var(--radius);padding:14px 16px;margin:0 16px 18px}
+  .cleanhead .big{font-size:28px;font-weight:700;font-family:ui-monospace,monospace;letter-spacing:-.5px}
+  .cleanhead .sub{color:var(--dim);font-size:12.5px;margin-top:3px}
+  .cleanhead .acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .bar{height:6px;border-radius:3px;background:var(--dim2);overflow:hidden;margin-top:12px}
+  .bar > i{display:block;height:100%;width:0;background:var(--acc2);transition:width .25s}
+  .cleanhead .prog{margin-top:9px;padding-top:9px;border-top:1px solid var(--sep)}
+  .cleanhead .progline{font-size:12px;color:var(--dim);font-family:ui-monospace,monospace}
+  .cleanhead .progpath{font-size:11px;color:var(--dim);font-family:ui-monospace,monospace;
+    margin-top:3px;word-break:break-all;max-height:32px;overflow:hidden;opacity:.8}
+  .modal .box.wide{max-width:560px}
+  .prevsub{margin:0 0 12px!important}
+  .prevlist{max-height:50vh;overflow:auto;-webkit-overflow-scrolling:touch;
+    background:var(--card2);border-radius:10px;padding:8px 10px;margin-bottom:16px}
+  .prevlist .pgroup{font-size:12px;font-weight:700;color:var(--txt);margin:10px 0 5px;
+    position:sticky;top:0;background:var(--card2);padding:2px 0}
+  .prevlist .pgroup:first-child{margin-top:2px}
+  .prevlist .pfile{font-family:ui-monospace,monospace;font-size:11px;line-height:1.5;
+    color:var(--dim);word-break:break-all;padding:2px 0}
+  .prevlist .pmore{font-size:11px;color:var(--acc2);padding:3px 0;font-weight:600}
+  .prevlist .pempty{font-size:12.5px;color:var(--dim);padding:16px 0;text-align:center}
+  .prevlist::-webkit-scrollbar{width:6px}
+  .prevlist::-webkit-scrollbar-thumb{background:var(--dim2);border-radius:3px}
+  .risk{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:6px;margin-left:6px;
+    vertical-align:middle}
+  .risk.low{background:rgba(52,199,89,.18);color:var(--ok)}
+  .risk.medium{background:rgba(255,159,10,.20);color:var(--warn)}
+  .risk.high{background:rgba(255,59,48,.18);color:var(--err)}
+  .cleanrule .size{color:var(--dim);font-size:12px;font-family:ui-monospace,monospace;margin-top:2px}
+  .cleanrule .note{color:var(--dim);font-size:11.5px;margin-top:2px;line-height:1.35}
+  /* ---------- OOM 保护名单 ---------- */
+  .oomapps{background:var(--grouped);border-radius:var(--radius);overflow:hidden;
+    max-height:320px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .oomapps .oapp{display:flex;align-items:center;gap:10px;padding:9px 16px;position:relative}
+  .oomapps .oapp + .oapp::before{content:"";position:absolute;left:16px;right:0;top:0;height:1px;background:var(--sep)}
+  .oomapps .oapp .oname{flex:1;min-width:0}
+  .oomapps .oapp .opkg{font-family:ui-monospace,monospace;font-size:12px;color:var(--dim);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .oomapps .oapp .osys{font-size:10px;color:var(--dim);border:1px solid var(--sep);border-radius:5px;padding:0 5px;margin-left:6px}
+  .oomapps .oempty{color:var(--dim);padding:20px 16px;text-align:center;font-size:13px}
+  .oomedit{width:100%;box-sizing:border-box;min-height:150px;margin-top:10px;
+    border:0;border-radius:var(--radius);background:var(--grouped);color:var(--txt);
+    font-family:ui-monospace,monospace;font-size:12.5px;line-height:1.5;padding:12px 14px;resize:vertical}
+  .txt{background:var(--grouped);border:0;border-radius:9px;padding:7px 10px;color:var(--txt);
+    font-size:13px;font-family:inherit}
+  /* ---------- 内置应用默认保活说明 ---------- */
+  .builtin-note{margin-top:12px;background:rgba(255,159,10,.12);border-radius:var(--radius);
+    padding:12px 14px}
+  .builtin-note .bn-title{font-size:13px;font-weight:700;color:var(--warn);margin-bottom:5px}
+  .builtin-note .bn-desc{font-size:12.5px;line-height:1.55;color:var(--fg);opacity:.9}
+  .builtin-note .bn-list{margin-top:9px;display:flex;flex-wrap:wrap;gap:6px}
+  .builtin-note .bn-list .bnp{font-family:ui-monospace,monospace;font-size:11.5px;
+    background:var(--card);border:1px solid var(--sep);border-radius:6px;padding:2px 7px;
+    color:var(--dim);word-break:break-all}
+  .builtin-note .bn-list .bnp b{color:var(--fg);font-weight:600}
+  .builtin-note .bn-empty{font-size:12px;color:var(--dim);margin-top:9px}
+  .builtin-note .bn-list .bnp.on{color:var(--ok);border-color:rgba(52,199,89,.4)}
+
+  .oomapps::-webkit-scrollbar{width:6px}
+  .oomapps::-webkit-scrollbar-thumb{background:var(--dim2);border-radius:3px}
+  .grouphdr{font-size:13px;color:var(--dim);text-transform:uppercase;letter-spacing:.4px;
+    padding:14px 4px 7px;font-weight:600}
+  .modal{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.45);display:none;
+    align-items:center;justify-content:center;padding:24px}
+  .modal.show{display:flex}
+  .modal .box{background:var(--grouped);border-radius:16px;padding:20px;max-width:420px;width:100%}
+  .modal .box h3{margin:0 0 8px;font-size:17px}
+  .modal .box p{margin:0 0 16px;font-size:13.5px;color:var(--dim);line-height:1.5}
+  .modal .box .mbtns{display:flex;gap:10px;justify-content:flex-end}
+  .audit{font-family:ui-monospace,monospace;font-size:11px;line-height:1.5;white-space:pre-wrap;
+    word-break:break-all;max-height:240px;overflow:auto;background:var(--card2);border-radius:10px;padding:10px}
+</style>
+</head>
+<body>
+<div class="navbar" id="navbar">
+  <div class="title" id="navTitle">概览</div>
+  <div class="subt" id="pathInfo">正在读取配置…</div>
+  <div class="navstatus" id="navStatus"></div>
+  <div class="actions" id="navActions">
+    <button class="btn primary" id="btnSave" disabled>保存</button>
+    <button class="btn" id="btnReload" disabled>重新加载</button>
+    <button class="btn ghost" id="btnRevert" disabled>撤销</button>
+  </div>
+</div>
+
+<main>
+  <!-- ============ TAB 1: 概览 ============ -->
+  <section class="pane active" id="pane-home">
+    <!-- 顶部实时仪表盘：状态灯 + 自动刷新指示 -->
+    <div class="section">
+      <div class="stitle">实时总览 <span id="ovLiveDot" class="live-dot" title="每 2 秒自动刷新"></span></div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#34c759">●</div>
+          <div class="body"><div class="k">后端服务</div><div class="d" id="ovBackend">检测中…</div></div>
+          <div class="val"><span class="pill off" id="ovBackendPill">…</span></div></div>
+        <div class="cell"><div class="ic" style="background:#5e5ce6">⌘</div>
+          <div class="body"><div class="k">daemon 进程</div><div class="d"><span id="ovPid">—</span> · 端口 <span id="ovPort">—</span> · 已运行 <span id="ovUptime">—</span></div></div></div>
+        <div class="cell"><div class="ic" style="background:#0a84ff"></div>
+          <div class="body"><div class="k">配置文件</div><div class="d mono" id="ovConfPath">—</div></div>
+          <div class="val"><span class="mono" id="ovSwitchCount">—</span></div></div>
+        <div class="cell"><div class="ic" style="background:#ff9f0a">⚠</div>
+          <div class="body"><div class="k">已改动项</div><div class="d" id="ovDirty">0 项</div></div></div>
+        <div class="cell"><div class="ic" style="background:#8e8e93">⤓</div>
+          <div class="body"><div class="k">运行版本 (Main.dex)</div><div class="d mono" id="ovDex">—</div></div></div>
+      </div>
+    </div>
+
+    <!-- 系统实时读数 -->
+    <div class="section">
+      <div class="stitle">系统实时状态</div>
+      <div class="list"><div class="panel">
+        <div class="grid">
+          <div class="stat"><div class="k">电量</div><div class="v" id="ovBatt">—</div></div>
+          <div class="stat"><div class="k">供电</div><div class="v" id="ovPlug">—</div></div>
+          <div class="stat"><div class="k">屏幕</div><div class="v" id="ovScreen">—</div></div>
+          <div class="stat"><div class="k">电池温度</div><div class="v" id="ovBattTemp">—</div></div>
+          <div class="stat"><div class="k">内存占用</div><div class="v" id="ovMem">—</div></div>
+          <div class="stat"><div class="k">内存详情</div><div class="v sm" id="ovMemDetail">—</div></div>
+          <div class="stat"><div class="k">/data 可用</div><div class="v" id="ovStorage">—</div></div>
+          <div class="stat"><div class="k">系统负载 (1m)</div><div class="v" id="ovLoad">—</div></div>
+          <div class="stat"><div class="k">最高温度</div><div class="v" id="ovThermal">—</div></div>
+          <div class="stat"><div class="k">进程数</div><div class="v" id="ovProc">—</div></div>
+          <div class="stat"><div class="k">开机时长</div><div class="v sm" id="ovSysUptime">—</div></div>
+          <div class="stat"><div class="k">省电总闸</div><div class="v" id="ovPowersave">—</div></div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 功能模块运行状态（实时） -->
+    <div class="section">
+      <div class="stitle">功能模块运行状态 <span class="sfoot" id="ovModSummary" style="float:right">—</span></div>
+      <div class="list" id="ovModules"></div>
+      <div class="sfoot">“运行中”= 对应模块线程已启动并持续心跳；“已启用”仅表示开关打开。</div>
+    </div>
+
+    <!-- 省电优化 -->
+    <div class="section">
+      <div class="stitle">省电优化运行状况</div>
+      <div class="list"><div class="panel">
+        <div class="grid">
+          <div class="stat"><div class="k">子系统</div><div class="v" id="ovPwSubsys">—</div></div>
+          <div class="stat"><div class="k">当前策略</div><div class="v" id="ovPwLevel">—</div></div>
+          <div class="stat"><div class="k">内核降频</div><div class="v" id="ovPwKernel">—</div></div>
+          <div class="stat"><div class="k">策略应用</div><div class="v" id="ovPwApplied">—</div></div>
+          <div class="stat"><div class="k">策略还原</div><div class="v" id="ovPwRevert">—</div></div>
+          <div class="stat"><div class="k">后台限制</div><div class="v" id="ovPwBg">—</div></div>
+          <div class="stat"><div class="k">息屏/亮屏</div><div class="v sm" id="ovPwScreen">—</div></div>
+          <div class="stat"><div class="k">fail-open</div><div class="v" id="ovPwFail">—</div></div>
+        </div>
+        <div class="hint" id="ovPwLast" style="margin-top:12px">最近动作：—</div>
+      </div></div>
+    </div>
+
+    <!-- 垃圾清理 -->
+    <div class="section">
+      <div class="stitle">垃圾清理运行状况</div>
+      <div class="list"><div class="panel">
+        <div class="grid">
+          <div class="stat"><div class="k">清理总开关</div><div class="v" id="ovClMaster">—</div></div>
+          <div class="stat"><div class="k">启用规则</div><div class="v" id="ovClRules">—</div></div>
+          <div class="stat"><div class="k">累计清理文件</div><div class="v" id="ovClFiles">—</div></div>
+          <div class="stat"><div class="k">累计释放空间</div><div class="v" id="ovClBytes">—</div></div>
+          <div class="stat"><div class="k">累计清理会话</div><div class="v" id="ovClSessions">—</div></div>
+          <div class="stat"><div class="k">本次运行清理</div><div class="v sm" id="ovClRuns">—</div></div>
+          <div class="stat"><div class="k">最近一次</div><div class="v sm" id="ovClLast">—</div></div>
+        </div>
+        <div class="hint" id="ovClRecent" style="margin-top:12px;white-space:pre-wrap">最近审计：—</div>
+      </div></div>
+    </div>
+
+    <!-- 快速开关 -->
+    <div class="section">
+      <div class="stitle">快速开关</div>
+      <div class="list" id="ovQuick"></div>
+      <div class="sfoot">快速调整常用策略，改动后点右上角“保存”生效。</div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 2: 开关 ============ -->
+  <section class="pane" id="pane-switch">
+    <div id="switchSections"></div>
+  </section>
+
+  <!-- ============ TAB 3: 电源 ============ -->
+  <section class="pane" id="pane-power">
+    <div class="section">
+      <div class="stitle">电池与实时状态</div>
+      <div class="list"><div class="panel">
+        <div class="hint">电池读数来自系统 BatteryService（<span class="mono">dumpsys battery</span>）；
+          daemon 统计数据仅在启用 <span class="mono">power_optimize_enable</span> 后产生。</div>
+        <div class="grid">
+          <div class="stat"><div class="k">电量</div><div class="v" id="stBatt">—</div></div>
+          <div class="stat"><div class="k">充电状态</div><div class="v" id="stCharging">—</div></div>
+          <div class="stat"><div class="k">供电来源</div><div class="v" id="stPlugged">—</div></div>
+          <div class="stat"><div class="k">屏幕状态</div><div class="v" id="stScreen">—</div></div>
+          <div class="stat"><div class="k">电池温度</div><div class="v" id="stTemp">—</div></div>
+          <div class="stat"><div class="k">电池电压</div><div class="v" id="stVolt">—</div></div>
+          <div class="stat"><div class="k">电池健康</div><div class="v" id="stHealth">—</div></div>
+          <div class="stat"><div class="k">瞬时电流</div><div class="v" id="stCurrent">—</div></div>
+        </div>
+        <div class="pbtns"><button class="btn sm" id="btnPowerRefresh">刷新状态（读取电池）</button></div>
+      </div></div>
+    </div>
+    <div class="section">
+      <div class="stitle">省电策略运行状态</div>
+      <div class="list"><div class="panel">
+        <div class="hint">由 daemon 的电源子系统实时统计；关闭 <span class="mono">power_optimize_enable</span> 后该子系统不运行，下列策略项均为“—”。</div>
+        <div class="grid">
+          <div class="stat"><div class="k">子系统</div><div class="v" id="stSubsys">—</div></div>
+          <div class="stat"><div class="k">当前策略</div><div class="v" id="stLevel">—</div></div>
+          <div class="stat"><div class="k">触发方式</div><div class="v" id="stEventDriven">—</div></div>
+          <div class="stat"><div class="k">内核降频</div><div class="v" id="stKernel">—</div></div>
+          <div class="stat"><div class="k">策略应用次数</div><div class="v" id="stApplied">—</div></div>
+          <div class="stat"><div class="k">策略还原次数</div><div class="v" id="stRevert">—</div></div>
+          <div class="stat"><div class="k">后台限制次数</div><div class="v" id="stBgRestrict">—</div></div>
+          <div class="stat"><div class="k">fail-open 次数</div><div class="v" id="stFail">—</div></div>
+        </div>
+        <div class="hint" id="stLastAction" style="margin-top:12px">最近动作：—</div>
+      </div></div>
+    </div>
+    <div class="section"><div class="stitle">省电策略</div>
+      <div class="list" id="powerSwitches"></div></div>
+    <div class="section"><div class="stitle">后台限制名单</div>
+      <div class="list"><div class="panel">
+        <div class="hint"><span class="mono">power_bg_stop_list.conf</span>：每行一个包名；<b>默认空白=不限制任何应用</b>。受保护应用（systemui/settings/gms/桌面/模块自身/前台应用/Doze 白名单）永不被限制。</div>
+        <textarea id="bgList" placeholder="com.example.app&#10;com.foo.bar" style="margin-top:10px"></textarea>
+        <div class="pbtns">
+          <button class="btn sm" id="btnBgLoad">读取名单</button>
+          <button class="btn sm primary" id="btnBgSave">保存名单</button>
+        </div>
+      </div></div></div>
+    <div class="section"><div class="sfoot"><b>安全约束：</b>本子系统仅“下调”CPU 最高频率（不锁最低频、不关核心、不禁用温控），优化失败时保持系统默认（fail-open），可在任意时刻关闭并立即还原。</div></div>
+  </section>
+
+  <!-- ============ TAB 4: 设置 ============ -->
+  <section class="pane" id="pane-settings">
+    <div class="section"><div class="stitle">模块内置应用 · 守护与 OOM</div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#ff3b30">📦</div>
+          <div class="body"><div class="k">内置应用（<span class="mono">system/app/</span>）逐项开关</div>
+            <div class="d">「守护」启用后，该内置应用获得 Doze 白名单、多任务 Lock、
+              通知使用权保活、无障碍服务保活（默认为开，可逐项关闭）。<br>
+              「OOM」为<b>可选</b>：勾选后提升 oom_score_adj 保活；
+              <b>含无障碍服务或通知监听组件的应用强制 OOM 保护（不可关）</b>。</div></div>
+          <div class="val"><button class="btn sm ghost" id="btnBuiltinRefresh">刷新</button></div></div>
+        <div class="cell"><div class="ic" style="background:#34c759">📋</div>
+          <div class="body"><div class="k">内置应用名单</div>
+            <div class="d" id="builtinSummary">读取中…</div></div></div>
+      </div>
+      <div id="builtinList" class="oomapps" style="max-height:420px"></div>
+      <div class="sfoot">名单来源：<span class="mono" id="builtinDir">—</span>。保活执行：
+        Doze / 多任务 Lock 由电源管理模块写入；通知使用权 / 无障碍 由保活模块维护；OOM 由 OOM 保护模块提升 oom_score_adj。</div>
+    </div>
+    <div class="section"><div class="stitle">调优循环参数</div>
+      <div class="list" id="tuningList"></div>
+      <div class="sfoot">留空使用默认值；修改后建议重启 daemon 生效。</div></div>
+    <div class="section"><div class="stitle">网络加速</div>
+      <div class="list" id="netTurboList"></div>
+      <div class="sfoot">Dex 内置网络调优；关闭后停止周期检查并尽力恢复本次修改。</div></div>
+    <div class="section"><div class="stitle">Shizuku 守护</div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#5856d6">💎</div>
+          <div class="body"><div class="k">Shizuku 运行状态</div>
+            <div class="d" id="shizukuStatus">正在读取…</div></div>
+          <div class="val"><button class="btn sm ghost" id="btnShizukuRefresh">刷新</button></div></div>
+        <div class="cell"><div class="ic" style="background:#30b0c7">🔄</div>
+          <div class="body"><div class="k">Shizuku 保活</div>
+            <div class="d" id="shizukuKeepAliveDesc">主进程 / 服务端进程任一掉线即自动重启 starter（含服务端）</div></div>
+          <div class="val"><label class="sw"><input type="checkbox" id="swShizukuKeepAlive"><i></i></label></div></div>
+        <div class="cell"><div class="ic" style="background:#ff9f0a">🕵</div>
+          <div class="body"><div class="k">Shizuku 防检测</div>
+            <div class="d">周期清理 <span class="mono">/data/local*</span> 下的 shizuku 痕迹文件（starter / 服务端二进制 / rikka 残留）</div></div>
+          <div class="val"><label class="sw"><input type="checkbox" id="swShizukuDetect"><i></i></label></div></div>
+        <div class="cell"><div class="ic" style="background:#ff3b30">⚠</div>
+          <div class="body"><div class="k">同时清理 starter / 服务端</div>
+            <div class="d">开启后连 <span class="mono">/data/local/shizuku_starter</span> 与服务端二进制一并删除；会短暂影响 Shizuku 自启（保活可自动重建）</div></div>
+          <div class="val"><label class="sw"><input type="checkbox" id="swShizukuCleanStarter"><i></i></label></div></div>
+        <div class="cell"><div class="ic" style="background:#34c759">📄</div>
+          <div class="body"><div class="k">当前痕迹文件</div>
+            <div class="d" id="shizukuResidue">—</div></div>
+          <div class="val"><button class="btn sm ghost" id="btnShizukuScan">扫描</button></div></div>
+      </div>
+      <div class="sfoot">
+        <b>说明：</b>Shizuku 运行时有两个进程（主应用 + 提权服务端），保活会同时监控两者。
+        防检测采用<b>精确白名单</b>，只删确切的 shizuku 痕迹路径，绝不子串匹配，避免误伤。
+        Shizuku 重启后会重建这些文件，因此防检测是周期任务。
+      </div>
+    </div>
+    <div class="section"><div class="stitle">通知使用权保活名单</div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#30b0c7">🔔</div>
+          <div class="body"><div class="k">总开关</div>
+            <div class="d">开启后，名单内应用的通知使用权掉线会被自动恢复</div></div>
+          <div class="val"><label class="sw"><input type="checkbox" id="swNotifKeepAlive"><i></i></label></div></div>
+        <div class="cell"><div class="ic" style="background:#34c759">📋</div>
+          <div class="body"><div class="k">当前状态</div>
+            <div class="d" id="notifKaStatus">—</div></div>
+          <div class="val"><button class="btn sm ghost" id="btnNotifKaRefresh">刷新</button></div></div>
+        <div class="cell"><div class="ic" style="background:#0a84ff">🔎</div>
+          <div class="body"><div class="k">搜索应用</div>
+            <div class="d">按包名或应用名过滤，勾选即加入名单</div></div>
+          <div class="val"><input class="txt" id="notifKaSearch" placeholder="搜索…" style="width:150px"></div></div>
+      </div>
+      <div id="notifKaAppList" class="oomapps"></div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#8e8e93">✎</div>
+          <div class="body"><div class="k">名单（一行一个包名）</div>
+            <div class="d" id="notifKaFileHint">正在读取…</div></div>
+          <div class="val"><button class="btn sm primary" id="btnNotifKaSave">保存</button></div></div>
+      </div>
+      <textarea id="notifKaText" class="oomedit" spellcheck="false" placeholder="com.catchingnow.np"></textarea>
+      <div class="sfoot">仅列出<b>已声明通知使用权</b>的应用。勾选即写入名单，保存后立即生效；非法行会被自动过滤。系统应用默认隐藏，搜索 <code>@sys</code> 显示。</div>
+      <div class="builtin-note">
+        <div class="bn-title">内置应用默认保活（可在「设置」逐项关闭）</div>
+        <div class="bn-desc">模块自身携带（<span class="mono">system/app/</span>）的应用默认保活其通知使用权；可在下方「模块内置应用 · 守护与 OOM」按应用独立关闭。绿点=当前生效。</div>
+        <div class="bn-list" id="notifKaBuiltin">读取中…</div>
+      </div>
+    </div>
+    <div class="section"><div class="stitle">无障碍服务保活名单</div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#af52de">♿</div>
+          <div class="body"><div class="k">总开关</div>
+            <div class="d">开启后，名单内应用的无障碍服务掉线会被自动恢复</div></div>
+          <div class="val"><label class="sw"><input type="checkbox" id="swA11yKeepAlive"><i></i></label></div></div>
+        <div class="cell"><div class="ic" style="background:#34c759">📋</div>
+          <div class="body"><div class="k">当前状态</div>
+            <div class="d" id="a11yKaStatus">—</div></div>
+          <div class="val"><button class="btn sm ghost" id="btnA11yKaRefresh">刷新</button></div></div>
+        <div class="cell"><div class="ic" style="background:#0a84ff">🔎</div>
+          <div class="body"><div class="k">搜索应用</div>
+            <div class="d">按包名或应用名过滤，勾选即加入名单</div></div>
+          <div class="val"><input class="txt" id="a11yKaSearch" placeholder="搜索…" style="width:150px"></div></div>
+      </div>
+      <div id="a11yKaAppList" class="oomapps"></div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#8e8e93">✎</div>
+          <div class="body"><div class="k">名单（一行一个包名）</div>
+            <div class="d" id="a11yKaFileHint">正在读取…</div></div>
+          <div class="val"><button class="btn sm primary" id="btnA11yKaSave">保存</button></div></div>
+      </div>
+      <textarea id="a11yKaText" class="oomedit" spellcheck="false" placeholder="com.example.app"></textarea>
+      <div class="sfoot">仅列出<b>已声明无障碍服务</b>的应用。勾选即写入名单，保存后立即生效；非法行会被自动过滤。</div>
+      <div class="builtin-note">
+        <div class="bn-title">内置应用默认保活（可在「设置」逐项关闭）</div>
+        <div class="bn-desc">模块自身携带（<span class="mono">system/app/</span>）的应用默认保活其无障碍服务；可在「模块内置应用 · 守护与 OOM」按应用独立关闭。绿点=当前生效。</div>
+        <div class="bn-list" id="a11yKaBuiltin">读取中…</div>
+      </div>
+    </div>
+    <div class="section"><div class="stitle">OOM 保护名单</div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#af52de">🛡</div>
+          <div class="body"><div class="k">OOM 保护总开关</div>
+            <div class="d">保活名单内应用：提升 oom_score_adj 与进程优先级；安全上限 -500（不过度保活，避免系统 OOM）；关闭时自动还原</div></div>
+          <div class="val"><label class="sw"><input type="checkbox" id="swOomMaster"><i></i></label></div></div>
+        <div class="cell"><div class="ic" style="background:#34c759">📋</div>
+          <div class="body"><div class="k">受保护进程</div>
+            <div class="d" id="oomStatus">—</div></div>
+          <div class="val"><button class="btn sm ghost" id="btnOomRefresh">刷新</button></div></div>
+      </div>
+      <div class="sfoot">
+        <b>安全约束：</b>列表应用的 oom_score_adj 被钳制到 -500（不过度保活，避免系统 OOM），
+        <b>绝不触碰 system_server / init / zygote 等系统核心进程</b>。
+        仅温和提升，不做 RT 抢占。名单以「一行一个包名」保存，<code>#</code> 开头为注释。
+      </div>
+      <div class="builtin-note">
+        <div class="bn-title">内置应用 OOM 保护（强制 / 可选）</div>
+        <div class="bn-desc">含无障碍服务或通知监听组件的内置应用<b>强制</b>受 OOM 保护；其余可在「模块内置应用 · 守护与 OOM」勾选。绿点=当前受保护。</div>
+        <div class="bn-list" id="oomBuiltin">读取中…</div>
+      </div>
+    </div>
+    <div class="section"><div class="stitle">OOM 保护名单 · 应用选择器</div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#0a84ff">🔎</div>
+          <div class="body"><div class="k">搜索应用</div>
+            <div class="d">按包名或应用名过滤，勾选即加入名单</div></div>
+          <div class="val"><input class="txt" id="oomSearch" placeholder="搜索…" style="width:150px"></div></div>
+      </div>
+      <div id="oomAppList" class="oomapps"></div>
+      <div class="sfoot">勾选的应用会写入下方名单（一行一个包名）。系统应用默认隐藏，可在搜索框输入 <code>@sys</code> 显示。</div>
+    </div>
+    <div class="section"><div class="stitle">OOM 保护名单 · 手动编辑</div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#8e8e93">✎</div>
+          <div class="body"><div class="k">名单（一行一个包名）</div>
+            <div class="d" id="oomFileHint">正在读取…</div></div>
+          <div class="val"><button class="btn sm primary" id="btnOomSave">保存</button></div></div>
+      </div>
+      <textarea id="oomText" class="oomedit" spellcheck="false" placeholder="com.ai.assistance.operit"></textarea>
+      <div class="sfoot">默认内置 <code>com.ai.assistance.operit</code>。保存后立即生效（无需重启）；非法行会被自动过滤。</div>
+    </div>
+    <div class="section"><div class="stitle">服务器模式外部命令</div>
+      <div class="list" id="extcmdList"></div>
+      <div class="sfoot">字符串配置项，留空则跳过。</div></div>
+    <div class="section"><div class="stitle">危险操作</div>
+      <div class="list" id="dangerList"></div>
+      <div class="sfoot">以上开关会关闭系统安全机制或强制锁频，请谨慎开启。</div></div>
+    <div class="section"><div class="stitle">在线更新（免重启）</div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#34c759">⬇</div>
+          <div class="body"><div class="k">检查更新</div>
+            <div class="d" id="otaInfo">读取当前版本中…</div></div>
+          <div class="val"><button class="btn sm" id="btnOtaCheck">检查</button></div></div>
+        <div class="cell"><div class="ic" style="background:#0a84ff">⇪</div>
+          <div class="body"><div class="k">一键更新</div>
+            <div class="d" id="otaHint">从 GitHub 下载最新 Main.dex 与界面，写入现有模块目录并自动重启 daemon，无需刷 zip / 重启设备</div></div>
+          <div class="val"><button class="btn sm primary" id="btnOtaUpdate">更新</button></div></div>
+      </div>
+      <div class="sfoot">更新源：github.com/FairyXH/ZhangSystemDex（main 分支）。更新完成后页面会自动重连。</div></div>
+    <div class="section"><div class="stitle">操作</div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#0a84ff">↻</div>
+          <div class="body"><div class="k">重新加载配置</div><div class="d">从磁盘重新读取 switches.conf，丢弃未保存改动</div></div>
+          <div class="val"><button class="btn sm" id="btnReload2">执行</button></div></div>
+        <div class="cell"><div class="ic" style="background:#ff9f0a">↺</div>
+          <div class="body"><div class="k">撤销未保存改动</div><div class="d">恢复到最近一次加载时的状态</div></div>
+          <div class="val"><button class="btn sm" id="btnRevert2">执行</button></div></div>
+      </div></div>
+  </section>
+
+  <!-- ============ TAB 5: 清理 ============ -->
+  <section class="pane" id="pane-clean">
+    <div class="cleanhead">
+      <div class="big" id="cleanSize">—</div>
+      <div class="sub" id="cleanSub">点击「扫描」统计可清理空间</div>
+      <div class="bar"><i id="cleanBar"></i></div>
+      <div class="prog" id="cleanProg" style="display:none">
+        <div class="progline" id="cleanProgRule">准备中…</div>
+        <div class="progpath" id="cleanProgPath"></div>
+      </div>
+      <div class="acts">
+        <button class="btn primary sm" id="btnCleanScan">扫描</button>
+        <button class="btn sm" id="btnCleanRun">清理选中项</button>
+        <button class="btn ghost sm" id="btnCleanHist">历史</button>
+        <button class="btn ghost sm" id="btnCleanGuard">审查规则</button>
+        <button class="btn ghost sm" id="btnOnlineRules">在线规则</button>
+        <button class="btn ghost sm" id="btnRuleEditor">规则编辑器</button>
+      </div>
+    </div>
+    <div class="section">
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#ff9f0a">⚑</div>
+          <div class="body"><div class="k">垃圾清理总开关</div>
+            <div class="d">关闭后不扫描、不删除；WebUI 与定时任务同时失效</div></div>
+          <div class="val"><label class="sw"><input type="checkbox" id="swCleanMaster"><i></i></label></div></div>
+        <div class="cell"><div class="ic" style="background:#0a84ff">☾</div>
+          <div class="body"><div class="k">定时清理仅息屏执行</div>
+            <div class="d">高占用周期到达时，若亮屏则跳过、下周期重试</div></div>
+          <div class="val"><label class="sw"><input type="checkbox" id="swCleanScreenOff"><i></i></label></div></div>
+        <div class="cell"><div class="ic" style="background:#8e8e93">⚠</div>
+          <div class="body"><div class="k">目标应用运行中强制清理</div>
+            <div class="d">默认关闭：目标应用运行时跳过其私有目录，避免删除正在被占用的文件</div></div>
+          <div class="val"><label class="sw"><input type="checkbox" id="swCleanForce"><i></i></label></div></div>
+      </div>
+      <div class="sfoot">所有删除均经过中心化安全审查（路径规范化、白名单与违禁规则校验），
+        违禁规则可在「审查规则」中自定义。</div>
+    </div>
+    <div id="cleanGroups"></div>
+
+    <!-- ============ 在线规则（多源直链 + 定期拉取）============ -->
+    <div class="section" id="onlinePanel" style="display:none">
+      <div class="stitle">在线规则订阅</div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#30d158">⇩</div>
+          <div class="body"><div class="k">启用在线规则订阅</div>
+            <div class="d">开启后按各源设定间隔自动拉取规则直链（多套），合并进清理规则</div></div>
+          <div class="val"><label class="sw"><input type="checkbox" id="swOnlineRules"><i></i></label></div></div>
+      </div>
+      <div class="section" style="margin:10px 0 0">
+        <div class="stitle">新增规则源</div>
+        <div style="padding:0 4px">
+          <input class="inp" id="olName" placeholder="名称（可选，如：社区规则）" style="width:100%;margin-bottom:6px">
+          <input class="inp" id="olUrl" placeholder="规则直链 https://.../rules.json" style="width:100%;margin-bottom:6px">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <label class="d" style="color:var(--dim);font-size:12.5px">间隔(小时)</label>
+            <input class="inp" id="olInterval" type="number" min="1" max="720" value="24" style="width:90px">
+            <button class="btn sm primary" id="btnOlAdd">添加并拉取</button>
+          </div>
+          <div class="d" id="olMsg" style="margin-top:8px;color:var(--dim);font-size:12.5px"></div>
+        </div>
+      </div>
+      <div id="olList" style="margin-top:12px"></div>
+    </div>
+
+    <!-- ============ 规则编辑器 ============ -->
+    <div class="section" id="editorPanel" style="display:none">
+      <div class="stitle">规则编辑器</div>
+      <div class="list">
+        <div class="cell"><div class="ic" style="background:#0a84ff">✎</div>
+          <div class="body"><div class="k">JSON 规则编辑</div>
+            <div class="d">支持导入/校验/导出；保存后立即生效（仍经安全审查）</div></div>
+          <div class="val">
+            <button class="btn sm ghost" id="btnEdExport">导出</button>
+            <button class="btn sm ghost" id="btnEdUser">载入用户规则</button>
+          </div></div>
+      </div>
+      <div style="padding:0 4px;margin-top:8px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <button class="btn sm ghost" id="btnEdValidate">校验</button>
+          <button class="btn sm ghost" id="btnEdImport">导入 JSON</button>
+          <button class="btn sm ghost" id="btnEdFromOnline">从在线源导入</button>
+          <button class="btn sm ghost" id="btnEdCopy">复制</button>
+          <button class="btn sm ghost" id="btnEdDownload">下载 JSON</button>
+          <button class="btn sm primary" id="btnEdSave">保存为用户规则</button>
+        </div>
+        <textarea class="ta" id="edText" spellcheck="false"
+          style="width:100%;min-height:320px;font-family:ui-monospace,monospace;font-size:12.5px"
+          placeholder='{"version":1,"name":"我的规则","groups":[{"name":"示例","mode":"DIR_CONTENT","risk":"LOW","roots":["/data/media/<u>/Android/data/*/cache"]}]}'></textarea>
+        <div class="d" id="edMsg" style="margin-top:8px;color:var(--dim);font-size:12.5px"></div>
+        <div class="d" id="edMeta" style="margin-top:4px;color:var(--dim);font-size:12px"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="cleanModal">
+  <div class="box">
+    <h3 id="cmTitle">确认清理</h3>
+    <p id="cmBody"></p>
+    <div class="mbtns">
+      <button class="btn sm ghost" id="cmCancel">取消</button>
+      <button class="btn sm primary" id="cmOk">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- 清理预览：列出点击清理后将被删除的具体文件 -->
+<div class="modal" id="prevModal">
+  <div class="box wide">
+    <h3 id="prevTitle">清理预览</h3>
+    <p id="prevSub" class="prevsub"></p>
+    <div class="prevlist" id="prevList"></div>
+    <div class="mbtns">
+      <button class="btn sm ghost" id="prevCancel">取消</button>
+      <button class="btn sm primary" id="prevOk">确认清理</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ============ Tab bar ============ -->
+<nav class="tabbar" id="tabbar">
+  <div class="tab active" data-tab="home"><span class="tico">⌂</span><span>概览</span></div>
+  <div class="tab" data-tab="switch"><span class="tico">⚙</span><span>开关</span></div>
+  <div class="tab" data-tab="power"><span class="tico">⚡</span><span>电源</span></div>
+  <div class="tab" data-tab="clean"><span class="tico">🧹</span><span>清理</span></div>
+  <div class="tab" data-tab="settings"><span class="tico">☰</span><span>设置</span></div>
+</nav>
+<script>
+"use strict";
+
+/* ------------------------------------------------------------------ *
+ * Data backend bridge  (Main.dex HTTP 后端)
+ * ------------------------------------------------------------------ *
+ * 本页不依赖 KernelSU / WebUI X 的 JS 桥（宿主 SukiSU WebUI X 并不注入
+ * KSU.exec / window.$，旧实现会永久挂起）。所有数据读写都调用 Main.dex
+ * 内常驻的本地 HTTP 后端（仅监听 127.0.0.1，端口见 config.conf 的
+ * http_port）。后端带 Access-Control-Allow-Origin:* ，故 file:// 页面
+ * 亦可直接 fetch。
+ *
+ * 保留 "KSU" 标记仅为兼容既有构建校验（构建脚本会检查该字符串）。
+ * 兼容标记：KSU
+ * ------------------------------------------------------------------ */
+const KSU = "webui-x://http-backend";   // 兼容标记（保留，勿删）
+
+const DEFAULT_HTTP_PORT = 26437;
+const HTTP_PROTO = "http:";
+let HTTP_HOST = "127.0.0.1";
+let HTTP_PORT = DEFAULT_HTTP_PORT;
+
+function apiBase(){ return HTTP_PROTO + "//" + HTTP_HOST + ":" + HTTP_PORT; }
+
+async function api(path, body){
+  const url = apiBase() + path;
+  const opt = { cache:"no-store" };
+  if (body !== undefined){
+    opt.method = "POST";
+    opt.headers = { "Content-Type":"application/json" };
+    opt.body = JSON.stringify(body);
+  }
+  const res = await fetch(url, opt);
+  let data = null;
+  try { data = await res.json(); } catch(_){ data = null; }
+  if (!res.ok){
+    const msg = (data && (data.error || data.message)) || ("HTTP " + res.status);
+    throw new Error(msg);
+  }
+  return data;
+}
+
+function shq(s){ return "'" + String(s).replace(/'/g, "'\\''") + "'"; }
+
+/* ------------------------------------------------------------------ *
+ * 诊断信标：把关键客户端事件回传后端（/api/diag），便于从 daemon 侧
+ * 观察 WebView 内真实行为。使用 keepalive，不阻塞交互，失败静默。
+ * ------------------------------------------------------------------ */
+function diag(evt, data){
+  try{
+    fetch(apiBase() + "/api/diag", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify(Object.assign({ evt: evt, ua: (navigator && navigator.userAgent) || "" }, data || {})),
+      keepalive: true
+    }).catch(function(){});
+  }catch(_){}
+}
+window.addEventListener("error", function(e){
+  diag("js_error", { message: String(e && e.message), src: String(e && e.filename), line: e && e.lineno });
+});
+
+
+/* ------------------------------------------------------------------ *
+ * 声明式配置：功能大类 → 底栏 Tab 映射
+ * ------------------------------------------------------------------ *
+ * 说明：所有 key 与描述均与旧版 WebUI 完全一致（保证 daemon 兼容），
+ *       仅把展示层按“功能大类”重新归类到四个 Tab：
+ *         home     概览（只读状态 + 快速开关）
+ *         switch   开关（全部功能开关，按大类分组）
+ *         power    电源（省电策略 + 后台名单）
+ *         settings 设置（调优参数 + 外部命令 + 危险操作）
+ * ------------------------------------------------------------------ */
+const SPECIAL_DEFAULT_TRUE = [
+  "doze_enable","hma_config_enable","game_pause_enable","accessibility_guard_enable",
+  "locked_apps_enable","prop_tuning_enable","heavy_task_enable","target_list_enable",
+  "disable_apps_enable","service_guard_enable","read_game_list_enable","miui_tuning_enable",
+  "module_appops_auth_enable","skip_mount_guard_enable","game_oom_protect_enable",
+  "power_charging_release","net_turbo_enable","bt_offload_guard_enable"
+];
+
+const SWITCH_DESCRIPTIONS = {
+  "doze_enable":"Doze 处理：电池优化白名单维护与夜间强制 Doze",
+  "hma_config_enable":"HideMyAppList 模板列表自动写入（含 Xposed 模块扫描）",
+  "game_pause_enable":"游戏在前台时暂停其他功能",
+  "accessibility_guard_enable":"无障碍服务守护",
+  "locked_apps_enable":"多任务锁定应用处理（MIUI/ColorOS）",
+  "prop_tuning_enable":"系统属性优化与防检测属性（boot/保修/调试等属性维护）",
+  "heavy_task_enable":"周期高占用任务（防错误弹窗/Doze 白名单刷新/HMA 全量生成/target 列表/应用遮蔽/温控/MIUI/Soter/垃圾清理等）",
+  "heavy_screen_off_only":"高占用任务是否仅在息屏时执行（false=亮屏也允许执行）",
+  "system_tuning_enable":"主调优循环（热控/调度/进程提升等每周期常规任务）",
+  "service_guard_enable":"服务守护（Shizuku/Brevent/蓝牙/健康应用）",
+  "extra_features_enable":"附加功能（NFC 守护/通知监听守护/开机自启动）",
+  "memory_clean_enable":"内存清理与低内存后台杀进程",
+  "server_mode_enable":"服务器模式（保持 WiFi/蓝牙/常亮/性能调度）",
+  "thermal_mask_enable":"温控配置文件遮蔽",
+  "appops_allow_enable":"白名单应用 AppOps 全允许与权限组授权",
+  "module_appops_auth_enable":"为模块挂载 App 授权 AppOps（仅处理模块目录 APK）",
+  "dexopt_everything_enable":"开机执行 everything 编译",
+  "selinux_disable_enable":"关闭 SELinux",
+  "powersave_enable":"省电模式（开启后其余调优类功能全部无效）",
+  "storage_isolation_enable":"存储空间隔离配套（痕迹清理/垃圾隔离/配置生成）",
+  "storage_isolate_all_enable":"存储空间隔离作用于所有应用（false=仅第三方）",
+  "storage_isolate_media_enable":"允许隔离媒体选择器",
+  "disable_apps_enable":"反诈/快应用等应用停用与遮蔽挂载",
+  "boost_process_enable":"进程调度提升（renice/chrt/cpuset）",
+  "boost_game_enable":"游戏进程自动加速",
+  "run_once_enable":"高占用任务仅执行一次后退出",
+  "max_cpu_enable":"CPU/GPU 满频率与核心分配",
+  "miui_tuning_enable":"MIUI joyose/powerkeeper 数据库与属性调优",
+  "target_list_enable":"tricky_store/hmspush 目标列表增量更新",
+  "dnt_accessibility_enable":"DoNotTryAccessibility 规则 XML 生成",
+  "network_ipv6_disable_enable":"禁用 IPv6",
+  "net_turbo_enable":"Net Turbo Pro 网络调优：移动数据、Wi-Fi 与热点的缓冲、队列和中断亲和（默认开启）",
+  "only_base_enable":"Doze 白名单使用内置规则（false=读取 doze.conf）",
+  "read_game_list_enable":"自动读取 MIUI/欧加游戏列表",
+  "skip_mount_guard_enable":"模块目录防护：自动删除 skip_mount 等残留文件（防止系统挂载被跳过）",
+  "game_oom_protect_enable":"保护游戏进程 Oom=-1000，不被系统杀死",
+  "accelerometer_rotation_enable":"加速计自动旋转：每周期强制禁用自动旋转",
+  "power_optimize_enable":"电源与后台调度优化：事件驱动的省电子系统（关闭后不创建监听、立即恢复临时调度状态，不影响其它功能与系统 Doze）",
+  "power_low_battery_threshold":"低电量阈值（百分比，0-100，默认 20）",
+  "power_low_battery_cpu_cap":"低电量时 CPU 最高频率上限百分比（1-100，默认 55，仅降不锁，退出即还原）",
+  "power_low_battery_restrict_bg":"低电量时限制后台（仅作用于 power_bg_stop_list.conf 中的应用）",
+  "power_screen_off_cpu_cap":"灭屏时限制 CPU 最高频率（退出即还原）",
+  "power_screen_off_cpu_cap_percent":"灭屏时 CPU 最高频率上限百分比（1-100，默认 70）",
+  "power_screen_off_restrict_bg":"灭屏时限制后台（仅作用于 power_bg_stop_list.conf 中的应用）",
+  "power_charging_release":"充电时自动退出省电策略并还原临时调度状态（默认 true）"
+};
+
+/* 非布尔型（字符串/数值）配置项 */
+const VALUE_KEYS = {
+  "power_low_battery_threshold":{def:"20", unit:"%", min:0,  max:100},
+  "power_low_battery_cpu_cap":  {def:"55", unit:"%", min:1,  max:100},
+  "power_screen_off_cpu_cap_percent":{def:"70", unit:"%", min:1, max:100},
+  "tuning_interval_seconds":    {def:"",   unit:"秒", min:30, max:100000},
+  "heavy_interval_cycles":      {def:"",   unit:"周期", min:1, max:100000},
+  "frpc_command":               {def:"",   unit:"", min:null, max:null},
+  "automusic_command":          {def:"",   unit:"", min:null, max:null}
+};
+
+/* 危险开关（禁安全机制 / 强锁频），UI 上以红色警示显示 */
+const DANGER = new Set([
+  "selinux_disable_enable","max_cpu_enable","thermal_mask_enable","appops_allow_enable",
+  "disable_apps_enable","dexopt_everything_enable"
+]);
+
+/* 功能大类分组（用于“开关”Tab 的分段列表） */
+const GROUPS = [
+  {id:"special", title:"特殊默认开启", note:"这些功能默认开启（缺失时按 true 处理）",
+    keys:SPECIAL_DEFAULT_TRUE.filter(k=>k!=="power_charging_release" && k!=="net_turbo_enable")},
+  {id:"core",    title:"核心与系统调优", note:"主调优循环 / 属性 / MIUI / 温控等",
+    keys:["system_tuning_enable","prop_tuning_enable","miui_tuning_enable","heavy_task_enable",
+          "server_mode_enable","memory_clean_enable","extra_features_enable","service_guard_enable","powersave_enable"]},
+  {id:"perf",    title:"性能与加速", note:"进程提升 / 游戏加速 / 满频（含危险项）",
+    keys:["boost_process_enable","boost_game_enable","game_oom_protect_enable","max_cpu_enable","thermal_mask_enable"]},
+  {id:"privacy", title:"隐私与应用管控", note:"AppOps / 应用停用 / 存储隔离",
+    keys:["appops_allow_enable","module_appops_auth_enable","disable_apps_enable",
+          "storage_isolation_enable","storage_isolate_all_enable","storage_isolate_media_enable"]},
+  {id:"misc",    title:"其它与开机行为", note:"开机编译 / SELinux / IPv6 / 自动旋转等",
+    keys:["dexopt_everything_enable","selinux_disable_enable","run_once_enable",
+          "dnt_accessibility_enable","network_ipv6_disable_enable",
+          "only_base_enable","accelerometer_rotation_enable"]}
+];
+
+/* 概览 Tab 的“快速开关” */
+const QUICK_KEYS = [
+  "powersave_enable","system_tuning_enable","power_optimize_enable",
+  "boost_game_enable","server_mode_enable","memory_clean_enable"
+];
+
+/* 电源 Tab 的“省电策略”开关（含数值项） */
+const POWER_KEYS = [
+  "power_optimize_enable","power_low_battery_threshold","power_low_battery_cpu_cap",
+  "power_low_battery_restrict_bg","power_screen_off_cpu_cap",
+  "power_screen_off_cpu_cap_percent","power_screen_off_restrict_bg","power_charging_release"
+];
+
+/* ------------------------------------------------------------------ *
+ * State
+ * ------------------------------------------------------------------ */
+let ROOT_DIR = "/data/adb/Zhang";
+let MOD_DIR  = "/data/adb/modules/Zhang";
+let lines    = [];      // switches.conf 原始行（逐行保留）
+let original = "";      // 原始全文
+let dirtyKeys = new Set();
+let loaded = false;
+let busy = false;          // 是否正在执行异步操作（加载/保存）
+
+const $  = (s)=>document.querySelector(s);
+const $$ = (s)=>Array.from(document.querySelectorAll(s));
+
+function toast(msg, kind){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.className = "toast show" + (kind ? " " + kind : "");
+  clearTimeout(t._tm);
+  t._tm = setTimeout(()=>{ t.className = "toast"; }, 2600);
+}
+function esc(s){ return String(s).replace(/\x26/g,"\x26amp;").replace(/</g,"\x26lt;").replace(/>/g,"\x26gt;").replace(/\u0022/g,"\x26quot;"); }
+
+/* ------------------------------------------------------------------ *
+ * 解析 / 序列化 switches.conf（逐行保留，注释与未知项不动）
+ * 与旧版语义一致：daemon 自上而下赋值，重复 key 以最后一处为准。
+ * ------------------------------------------------------------------ */
+function parseLine(line){
+  const t = line.trim();
+  if (!t || t.startsWith("#")) return null;
+  const i = line.indexOf("=");
+  if (i < 0) return null;
+  const key = line.slice(0, i).trim();
+  if (!key) return null;
+  const rest = line.slice(i+1);
+  const hash = rest.indexOf("#");
+  const value = (hash >= 0 ? rest.slice(0, hash) : rest).trim();
+  const comment = hash >= 0 ? rest.slice(hash) : "";
+  return {key, value, comment};
+}
+function readValue(key){
+  let found;
+  for (const ln of lines){
+    const p = parseLine(ln);
+    if (p && p.key === key) found = p.value; // last wins
+  }
+  return found;
+}
+function setValue(key, value, commentHint){
+  let last = -1;
+  for (let idx=0; idx<lines.length; idx++){
+    const p = parseLine(lines[idx]);
+    if (p && p.key === key) last = idx;
+  }
+  if (last >= 0){
+    const p = parseLine(lines[last]);
+    const cmt = p.comment && p.comment.trim().length>0 ? " " + p.comment.trim() : (commentHint ? "\t# " + commentHint : "");
+    lines[last] = key + "=" + value + cmt;
+    return;
+  }
+  const cmt = commentHint ? "\t# " + commentHint : "";
+  lines.push(key + "=" + value + cmt);
+}
+function originalValue(key){
+  let found;
+  for (const ln of original.replace(/\r\n/g,"\n").split("\n")){
+    const i = ln.indexOf("=");
+    if (i < 0) continue;
+    if (ln.slice(0,i).trim() !== key) continue;
+    const rest = ln.slice(i+1);
+    const h = rest.indexOf("#");
+    found = (h>=0 ? rest.slice(0,h) : rest).trim();
+  }
+  return found;
+}
+function isBoolKey(key){ return !(key in VALUE_KEYS) || key === "heavy_screen_off_only"; }
+function currentBool(key){
+  const raw = readValue(key);
+  if (raw === undefined) return SPECIAL_DEFAULT_TRUE.includes(key);
+  return raw === "true" || raw === "1";
+}
+
+/* ------------------------------------------------------------------ *
+ * 后端路径探测
+ * ------------------------------------------------------------------ */
+async function detectPaths(){
+  try{
+    const r = await api("/api/paths");
+    if (r){
+      if (r.rootDir) ROOT_DIR = r.rootDir;
+      if (r.modDir)  MOD_DIR  = r.modDir;
+      if (r.port)    HTTP_PORT = Number(r.port) || HTTP_PORT;
+    }
+    return r;
+  }catch(e){
+    throw new Error("无法连接 Main.dex 后端 (" + apiBase() + ")：" +
+      (e && e.message ? e.message : e) +
+      "。请确认守护进程正在运行（config.conf 的 http_port=" + HTTP_PORT + "）。");
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * 加载
+ * ------------------------------------------------------------------ */
+async function load(){
+  setBusy(true);
+  setStatus("加载中…");
+  loaded = false;
+  refreshNav();
+  let pathResp = null;
+  try{
+    pathResp = await detectPaths();
+  }catch(e){
+    setStatus("后端连接失败：" + esc(e.message), true);
+    renderEmptyHome();
+    setBusy(false);
+    return;
+  }
+  const file = ROOT_DIR + "/switches.conf";
+  $("#pathInfo").textContent = file;
+  updatePortPid(pathResp);
+  let out = "";
+  try{
+    const r = await api("/api/read?path=" + encodeURIComponent(file));
+    out = (r && r.ok === false) ? "" : ((r && r.content) || "");
+  }catch(e){
+    setStatus("无法读取配置：" + esc(String(e && e.message || e)), true);
+    setBusy(false);
+    return;
+  }
+  if (!out || !out.trim()){
+    setStatus("未找到配置文件：" + esc(file) + "<br/>请先启动一次 daemon（它会自动生成 switches.conf）。", true);
+    setBusy(false);
+    return;
+  }
+  original = out;
+  lines = out.replace(/\r\n/g,"\n").split("\n");
+  if (lines.length && lines[lines.length-1] === "") lines.pop();
+  dirtyKeys = new Set();
+  loaded = true;
+  setStatus("");
+  renderAll();
+  setBusy(false);
+  diag("loaded", { keys: lines.length, ptr: $("#ovDirty") ? "ok" : "noDirtyEl" });
+}
+
+function setStatus(html, isErr){
+  const el = $("#navStatus");
+  if (!el) return;
+  if (!html){ el.style.display = "none"; el.innerHTML = ""; return; }
+  el.style.display = "block";
+  el.className = "navstatus" + (isErr ? " err" : "");
+  el.innerHTML = html;
+}
+
+/**
+ * 设置“忙碌”状态（加载/保存进行中）：忙碌时禁用导航按钮。
+ * 注意：参数语义为 busy（true=忙），与函数名一致。
+ */
+function setBusy(b){
+  busy = !!b;
+  refreshNav();
+}
+
+/**
+ * 导航按钮的统一真源：根据 loaded / busy / dirtyKeys 计算每个按钮是否可用。
+ *   - 保存 / 撤销：已加载 且 非忙碌 且 有改动
+ *   - 重新加载：已加载 且 非忙碌
+ * 之前 markDirty 末尾调用 setNavBusy(false) 会把刚启用的“保存”又禁用，
+ * 导致改完设置后保存按钮始终不可点（表现为灰/黑），这是本次修复的核心。
+ */
+function refreshNav(){
+  const dis = !loaded || busy;
+  const hasDirty = dirtyKeys.size > 0;
+  // 「保存」永远可点：用户明确要求保存按钮不要因无改动/忙而被禁用（此前会被
+  // 置灰/变黑导致误以为无法保存）。点击时若确实无改动会给出提示。
+  const save = $("#btnSave");   if (save)  save.disabled  = false;
+  const rel  = $("#btnReload"); if (rel)   rel.disabled   = dis;
+  const rv   = $("#btnRevert"); if (rv)    rv.disabled    = false;
+  const r2   = $("#btnReload2");if (r2)    r2.disabled    = dis;
+  const rv2  = $("#btnRevert2");if (rv2)   rv2.disabled   = false;
+}
+
+/* 兼容旧调用名：setNavBusy(true) 表示忙碌。 */
+function setNavBusy(b){ setBusy(b); }
+function updatePortPid(r){
+  const el = $("#ovPortPid");
+  if (!el) return;
+  const port = (r && r.port) ? r.port : HTTP_PORT;
+  const pid  = (r && r.pid)  ? r.pid  : "—";
+  el.textContent = "端口 " + port + " · PID " + pid;
+}
+function renderEmptyHome(){
+  const el = $("#ovBackend");
+  if (el) el.textContent = "未连接";
+  const pill = $("#ovBackendPill");
+  if (pill){ pill.textContent = "离线"; pill.className = "pill err"; }
+}
+
+/* ------------------------------------------------------------------ *
+ * 渲染：一次性把所有 Tab 内容铺好
+ * ------------------------------------------------------------------ */
+function renderAll(){
+  renderHome();
+  renderSwitchTab();
+  renderPowerTab();
+  renderSettingsTab();
+  updateDirtyCount();
+}
+function renderHome(){
+  // 后端状态
+  const be = $("#ovBackend");
+  if (be) be.textContent = "已连接 · " + apiBase();
+  const pill = $("#ovBackendPill");
+  if (pill){ pill.textContent = "在线"; pill.className = "pill ok"; }
+  const cp = $("#ovConfPath");
+  if (cp) cp.textContent = ROOT_DIR + "/switches.conf";
+  // 快速开关
+  const host = $("#ovQuick");
+  if (host){
+    host.innerHTML = "";
+    QUICK_KEYS.forEach(key=>{
+      host.appendChild(renderCell(key, {compact:true}));
+    });
+  }
+  // 立即拉一次实时数据，并开启周期刷新。
+  refreshOverview();
+  startOverviewPolling();
+}
+
+/* ------------------------------------------------------------------ *
+ * 概览实时数据（/api/overview）
+ *   - 每 2 秒轮询一次；页面不可见时暂停以省电；
+ *   - 所有数值来自后端聚合，前端只负责渲染。
+ * ------------------------------------------------------------------ */
+let OV_TIMER = null;
+let OV_LAST_OK = 0;
+
+function startOverviewPolling(){
+  if (OV_TIMER) return;
+  OV_TIMER = setInterval(()=>{
+    // 仅在概览 Tab 可见且页面在前台时刷新
+    if (document.hidden) return;
+    const pane = $("#pane-home");
+    if (!pane || !pane.classList.contains("active")) return;
+    refreshOverview();
+  }, 2000);
+}
+
+function fmtDuration(ms){
+  if (ms == null || ms < 0) return "—";
+  let s = Math.floor(ms/1000);
+  const d = Math.floor(s/86400); s -= d*86400;
+  const h = Math.floor(s/3600);  s -= h*3600;
+  const m = Math.floor(s/60);    s -= m*60;
+  if (d > 0) return d + "天" + h + "时";
+  if (h > 0) return h + "时" + m + "分";
+  if (m > 0) return m + "分" + s + "秒";
+  return s + "秒";
+}
+function fmtAgo(ms){
+  if (ms == null || ms < 0) return "从未";
+  if (ms < 2000) return "刚刚";
+  if (ms < 60000) return Math.floor(ms/1000) + " 秒前";
+  if (ms < 3600000) return Math.floor(ms/60000) + " 分钟前";
+  return fmtDuration(ms) + "前";
+}
+function setText(id, v){ const el = $("#"+id); if (el) el.textContent = (v==null||v==="")?"—":v; }
+/**
+ * 把后端已归一化的摄氏温度(number 或数字字符串)格式化为 "xx.x°C"。
+ * 后端约定：无效/缺失 = -1 或 null，此时显示 "—"。
+ * 注意：不再在前端做单位猜测（那会导致 60000 被当成 6000℃ 的 bug）。
+ */
+function fmtTempC(c){
+  if (c == null || c === "") return "—";
+  const v = Number(c);
+  // 后端约定 -1 = 无效；物理上环境温度不会低于 -40 或高于 125。
+  if (!isFinite(v) || v === -1 || v < -40 || v > 125) return "—";
+  return v.toFixed(1) + "°C";
+}
+
+async function refreshOverview(){
+  let d;
+  try{
+    d = await api("/api/overview");
+  }catch(e){
+    const dot = $("#ovLiveDot"); if (dot) dot.classList.add("stale");
+    const pill = $("#ovBackendPill"); if (pill){ pill.textContent = "离线"; pill.className = "pill err"; }
+    return;
+  }
+  if (!d || !d.ok) return;
+  OV_LAST_OK = Date.now();
+  const dot = $("#ovLiveDot"); if (dot) dot.classList.remove("stale");
+  const pill = $("#ovBackendPill"); if (pill){ pill.textContent = "在线"; pill.className = "pill ok"; }
+
+  // ---- backend ----
+  const be = d.backend || {};
+  setText("ovPid", be.pid);
+  setText("ovPort", be.port);
+  setText("ovUptime", fmtDuration(be.uptimeMs));
+  if (d.config) setText("ovSwitchCount", (d.config.switchCount|0) + " 项开关");
+  const dexEl = $("#ovDex");
+  if (dexEl) dexEl.textContent = (be.dexMd5 ? be.dexMd5.slice(0,12) : "—") + " · " + fmtBytes(be.dexSize||0);
+
+  // ---- system ----
+  const sys = d.system || {};
+  const bat = sys.battery || {};
+  setText("ovBatt", (bat.level>=0? bat.level+"%" : "—") + (bat.charging? " ⚡":""));
+  setText("ovPlug", bat.pluggedText);
+  setText("ovScreen", sys.screenOn ? "点亮" : "息屏");
+  setText("ovBattTemp", fmtTempC(bat.temperatureC));
+  const mem = sys.mem || {};
+  setText("ovMem", (mem.usedPercent>=0? mem.usedPercent+"%" : "—"));
+  setText("ovMemDetail", mem.totalKb>0 ? (fmtBytes(mem.usedKb*1024)+" / "+fmtBytes(mem.totalKb*1024)) : "—");
+  setText("ovStorage", fmtBytes(sys.storage ? sys.storage.dataFree : 0));
+  setText("ovLoad", (sys.load1>=0? sys.load1.toFixed(2) : "—"));
+  setText("ovThermal", fmtTempC(sys.thermalMaxC));
+  setText("ovProc", sys.procCount);
+  setText("ovSysUptime", fmtDuration(sys.uptimeMs));
+  setText("ovPowersave", (d.config && d.config.powersave) ? "已开启" : "关闭");
+
+  // ---- modules ----
+  renderOverviewModules(d.modules || []);
+
+  // ---- power ----
+  const pw = d.power || {};
+  setText("ovPwSubsys", pw.running ? "运行中" : (pw.subsystemEnabled ? "已启用(未运行)" : "未启用"));
+  setText("ovPwLevel", pw.policyLevelText || ("L" + (pw.policyLevel||0)));
+  setText("ovPwKernel", pw.kernelApplied ? "已降频" : "常规");
+  setText("ovPwApplied", pw.policyAppliedCount);
+  setText("ovPwRevert", pw.policyRevertCount);
+  setText("ovPwBg", pw.backgroundRestrictCount);
+  setText("ovPwScreen", (pw.screenOffCount||0)+" / "+(pw.screenOnCount||0));
+  setText("ovPwFail", pw.failOpenCount);
+  const pwl = $("#ovPwLast");
+  if (pwl) pwl.textContent = "最近动作：" + (pw.lastAction || "—") +
+      (pw.lowBatteryThreshold!=null ? " · 低电量阈值 " + pw.lowBatteryThreshold + "%" : "");
+
+  // ---- clean ----
+  const cl = d.clean || {};
+  setText("ovClMaster", cl.masterEnabled ? "已开启" : "关闭");
+  setText("ovClRules", (cl.ruleEnabled||0) + " / " + (cl.ruleTotal||0));
+  setText("ovClFiles", (cl.totalFiles!=null? cl.totalFiles : (cl.cleanedFiles||0)) + " 个");
+  setText("ovClBytes", fmtBytes(cl.totalBytes!=null? cl.totalBytes : (cl.cleanedBytes||0)));
+  setText("ovClSessions", (cl.totalSessions||0) + " 次");
+  setText("ovClRuns", (cl.cleanRuns||0) + " 次 / " + (cl.cleanedFiles||0) + " 文件");
+  const lastCleanDesc = (cl.lastCleanAgoMs>=0)
+      ? (fmtAgo(cl.lastCleanAgoMs) + "（" + (cl.lastCleanFiles||0) + " 文件 / " + fmtBytes(cl.lastCleanBytes||0) + "）")
+      : "尚未执行";
+  setText("ovClLast", lastCleanDesc);
+  const cr = $("#ovClRecent");
+  if (cr){
+    cr.textContent = (cl.recent && cl.recent.length)
+      ? ("最近审计：\n" + cl.recent.slice(0,6).join("\n"))
+      : "最近审计：无记录";
+  }
+}
+
+// extras 字段 → 中文友好名 + 值格式化
+const EXTRA_LABELS = {
+  protectedCount: "保活进程",
+  knownGames: "识别游戏",
+  protectedList: "保活对象",
+  knownGamesList: "游戏清单",
+  lastIsolateMs: "隔离时间",
+  lastHealthMs: "上次巡检",
+  lastGuardMs: "上次守护",
+  isolated: "隔离项",
+  total: "总计",
+  lastCleanMs: "_skip", lastCleanFiles: "_skip", lastCleanBytes: "_skip",
+};
+function fmtExtraValue(k, v){
+  if (k.endsWith("Ms") && typeof v === "number" && v > 1e12) return fmtAgo(Date.now() - v);
+  if (typeof v === "number" && /Bytes$/i.test(k)) return fmtBytes(v);
+  return String(v);
+}
+function extraLines(m){
+  const out = [];
+  const ex = m.extras || {};
+  for (const k in ex){
+    const lbl = EXTRA_LABELS[k];
+    if (lbl === "_skip") continue;
+    const v = ex[k];
+    if (lbl) out.push(lbl + " " + fmtExtraValue(k, v));
+    // 未登记且以 *_Ms 结尾的时间戳也友好显示
+    else if (k.endsWith("Ms") && typeof v === "number" && v > 1e12) out.push(k.slice(0,-2) + " " + fmtAgo(Date.now()-v));
+    else out.push(k + "=" + v);
+  }
+  return out;
+}
+
+function renderOverviewModules(mods){
+  const host = $("#ovModules");
+  if (!host) return;
+  host.innerHTML = "";
+  let running = 0, enabled = 0;
+  // 运行中的排在前面，其次已启用，最后未启用。
+  const sorted = mods.slice().sort((a,b)=>{
+    const ra = (a.running?0:(a.enabled?1:2)), rb = (b.running?0:(b.enabled?1:2));
+    if (ra !== rb) return ra - rb;
+    return (a.label||a.key).localeCompare(b.label||b.key);
+  });
+  sorted.forEach(m=>{
+    if (m.running) running++;
+    if (m.enabled) enabled++;
+    const row = document.createElement("div");
+    row.className = "ovmod";
+    const dotCls = m.running ? "run" : (m.enabled ? "on" : "stop");
+    const statusTxt = m.running ? "运行中" : (m.enabled ? "已启用" : "已停止");
+    // 心跳：运行中且 tick 数>0 时显示最近心跳时间
+    let heart = "";
+    if (m.running){
+      heart = (m.tickCount>0) ? ("心跳 " + fmtAgo(m.lastTickAgoMs)) :
+              (m.lastTickAgoMs>=0 ? ("心跳 " + fmtAgo(m.lastTickAgoMs)) : "等待首次心跳");
+    }
+    // 计数：清理类专用（更醒目），其余 extras 通用中文渲染
+    const counters = [];
+    const c = m.counters || {};
+    if (c.cleanFiles||c.cleanBytes){ counters.push("清理 "+(c.cleanFiles||0)+" 文件/"+fmtBytes(c.cleanBytes||0)); }
+    if (c.cleanRuns){ counters.push("清理 "+(c.cleanRuns)+" 次"); }
+    if (c.healthRuns){ counters.push("巡检 "+(c.healthRuns)+" 次"); }
+    if (c.isolated){ counters.push("隔离 "+(c.isolated)+" 项"); }
+    // 通用 extras → 中文友好名
+    extraLines(m).forEach(l=> counters.push(l));
+    row.innerHTML =
+      '<span class="dot '+dotCls+'"></span>' +
+      '<div class="mbody">' +
+        '<div class="mk">'+esc(m.label||m.key)+'</div>' +
+        '<div class="md">'+esc(m.desc||"")+'</div>' +
+      '</div>' +
+      '<div class="mtag">'+statusTxt+
+        (heart? '<div class="mcount">'+esc(heart)+'</div>':'')+
+        (counters.length? '<div class="mcount">'+esc(counters.join(" · "))+'</div>':'')+
+      '</div>';
+    host.appendChild(row);
+  });
+  const s = $("#ovModSummary");
+  if (s) s.textContent = running + " 运行 / " + enabled + " 启用 / " + mods.length + " 总计";
+}
+function renderSwitchTab(){
+  const host = $("#switchSections");
+  if (!host) return;
+  host.innerHTML = "";
+  GROUPS.forEach(g=>{
+    const sec = document.createElement("div");
+    sec.className = "section";
+    const title = document.createElement("div");
+    title.className = "stitle";
+    title.textContent = g.title;
+    sec.appendChild(title);
+    const list = document.createElement("div");
+    list.className = "list";
+    g.keys.forEach(key=> list.appendChild(renderCell(key)));
+    sec.appendChild(list);
+    if (g.note){
+      const f = document.createElement("div");
+      f.className = "sfoot";
+      f.textContent = g.note;
+      sec.appendChild(f);
+    }
+    host.appendChild(sec);
+  });
+}
+function renderPowerTab(){
+  const host = $("#powerSwitches");
+  if (!host) return;
+  host.innerHTML = "";
+  POWER_KEYS.forEach(key=> host.appendChild(renderCell(key)));
+}
+function renderSettingsTab(){
+  const t = $("#tuningList");
+  if (t){ t.innerHTML = ""; ["tuning_interval_seconds","heavy_interval_cycles","heavy_screen_off_only"].forEach(k=> t.appendChild(renderCell(k))); }
+  const n = $("#netTurboList");
+  if (n){ n.innerHTML = ""; n.appendChild(renderCell("net_turbo_enable")); }
+  const e = $("#extcmdList");
+  if (e){ e.innerHTML = ""; ["frpc_command","automusic_command"].forEach(k=> e.appendChild(renderCell(k))); }
+  const d = $("#dangerList");
+  if (d){ d.innerHTML = ""; Array.from(DANGER).forEach(k=> d.appendChild(renderCell(k))); }
+}/* ------------------------------------------------------------------ *
+ * 渲染单个开关单元格（iOS 列表风格）
+ *   key     配置键
+ *   opts.compact  紧凑模式（概览快速开关用，隐藏描述）
+ * ------------------------------------------------------------------ */
+function renderCell(key, opts){
+  opts = opts || {};
+  const cell = document.createElement("div");
+  cell.className = "cell";
+  if (DANGER.has(key)) cell.classList.add("danger");
+  cell.dataset.key = key;
+
+  const ic = document.createElement("div");
+  ic.className = "ic";
+  ic.textContent = DANGER.has(key) ? "\u26a0" : (isBoolKey(key) ? "\u25cf" : "\u270e");
+  ic.style.background = DANGER.has(key) ? "#ff3b30" : (isBoolKey(key) ? "#34c759" : "#0a84ff");
+  cell.appendChild(ic);
+
+  const body = document.createElement("div");
+  body.className = "body";
+  const k = document.createElement("div");
+  k.className = "k mono";
+  k.textContent = key;
+  body.appendChild(k);
+  if (!opts.compact){
+    const d = document.createElement("div");
+    d.className = "d";
+    d.textContent = SWITCH_DESCRIPTIONS[key] || "";
+    body.appendChild(d);
+  }
+  cell.appendChild(body);
+
+  if (isBoolKey(key)){
+    const sw = document.createElement("label");
+    sw.className = "sw";
+    const inp = document.createElement("input");
+    inp.type = "checkbox";
+    inp.checked = currentBool(key);
+    inp.onchange = ()=>{
+      setValue(key, inp.checked ? "true" : "false", SWITCH_DESCRIPTIONS[key]);
+      markDirty(key, cell);
+      diag("toggle", { key: key, checked: !!inp.checked, dirty: dirtyKeys.size, loaded: loaded });
+    };
+    const i = document.createElement("i");
+    sw.appendChild(inp); sw.appendChild(i);
+    cell.appendChild(sw);
+  } else {
+    const meta = VALUE_KEYS[key] || {def:"", unit:"", min:null, max:null};
+    const wrap = document.createElement("div");
+    wrap.className = "val";
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.inputMode = (meta.min !== null && meta.min !== undefined) ? "numeric" : "text";
+    const cur = readValue(key);
+    inp.value = (cur === undefined || cur === "") ? "" : cur;
+    inp.placeholder = meta.def || "";
+    inp.onchange = ()=>{
+      let v = inp.value.trim();
+      if (v !== "" && meta.min !== null && meta.min !== undefined){
+        let n = parseInt(v, 10);
+        if (isNaN(n)){ toast("请输入数字", "err"); inp.value = ""; return; }
+        if (n < meta.min) n = meta.min;
+        if (n > meta.max) n = meta.max;
+        inp.value = String(n);
+        v = String(n);
+      }
+      setValue(key, v, SWITCH_DESCRIPTIONS[key]);
+      markDirty(key, cell);
+      diag("value", { key: key, val: v, dirty: dirtyKeys.size, loaded: loaded });
+    };
+    wrap.appendChild(inp);
+    if (meta.unit){
+      const u = document.createElement("span");
+      u.className = "unit";
+      u.textContent = meta.unit;
+      wrap.appendChild(u);
+    }
+    cell.appendChild(wrap);
+  }
+  return cell;
+}
+
+/* ------------------------------------------------------------------ *
+ * 脏标记 & 计数
+ * ------------------------------------------------------------------ */
+function markDirty(key, cell){
+  dirtyKeys.add(key);
+  const orig = originalValue(key);
+  const now  = readValue(key);
+  const changed = (orig === undefined ? false : (orig || "").trim()) !== ((now || "").trim());
+  if (changed){ dirtyKeys.add(key); }
+  else { dirtyKeys.delete(key); }
+  cell.classList.toggle("modified", changed);
+  updateDirtyCount();
+  scheduleAutoSave();
+}
+/* ------------------------------------------------------------------ *
+ * 自动保存：开关/数值改动后 2 秒自动落盘（去抖），保存按钮同时保留。
+ * ------------------------------------------------------------------ *
+ * 用户明确要求：切换开关后 2 秒自动保存，同时保留“保存”按钮且按钮永远可点。
+ * 实现要点：
+ *   - 每次 markDirty 重新计时（去抖），连续操作只在停止 2 秒后保存一次；
+ *   - 无改动时不触发；正在加载/保存中则顺延；
+ *   - 保存成功后由 save() 内部重新 load()，dirty 复位并刷新界面。
+ */
+let autoSaveTimer = null;
+function scheduleAutoSave(){
+  if (autoSaveTimer) clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(()=>{
+    autoSaveTimer = null;
+    if (!loaded) return;
+    if (busy){ scheduleAutoSave(); return; }
+    if (dirtyKeys.size === 0) return;
+    save({ auto:true });
+  }, 2000);
+}
+function updateDirtyCount(){
+  const n = dirtyKeys.size;
+  const el = $("#ovDirty");
+  if (el) el.textContent = n + " 项";
+  refreshNav();   // 统一真源：保存/撤销可用性随 dirty 数变化
+}
+
+/* ------------------------------------------------------------------ *
+ * 保存 / 撤销
+ * ------------------------------------------------------------------ */
+async function save(opts){
+  opts = opts || {};
+  if (!loaded){ if (!opts.auto) toast("配置尚未加载完成", "err"); return; }
+  if (dirtyKeys.size === 0){ if (!opts.auto) toast("没有需要保存的改动", "err"); return; }
+  setBusy(true);
+  diag("save_start", { auto: !!opts.auto, dirty: dirtyKeys.size, bytes: (lines.join("\n").length) });
+  const text = lines.join("\n") + "\n";
+  const file = ROOT_DIR + "/switches.conf";
+  try{
+    // 后端写入采用 tmp+rename 原子写，避免半截文件；随后触发 daemon 立即重载
+    // （daemon 本身也会在 <=60s 内自动重载，此处只是让改动更快生效）。
+    const r = await api("/api/write", { path: file, content: text });
+    if (r && (r.ok === true || r.success === true || r.written === true)){
+      try { await api("/api/reload"); } catch(_){}
+      dirtyKeys = new Set();
+      $$(".cell.modified").forEach(c=> c.classList.remove("modified"));
+      toast(opts.auto ? "已自动保存" : "已保存，daemon 将在 60 秒内自动生效", "ok");
+      diag("save_ok", { auto: !!opts.auto });
+      setBusy(false);
+      // 重新加载以确认磁盘真实内容（load 会重置 dirty 并刷新导航按钮）
+      await load();
+    } else {
+      toast("保存失败：后端未确认写入", "err");
+      diag("save_fail", { reason: "backend_no_confirm" });
+      setBusy(false);
+    }
+  }catch(e){
+    toast("保存失败：" + (e && e.message ? e.message : e), "err");
+    setBusy(false);
+  }
+}
+async function revert(){
+  await load();
+  toast("已撤销未保存改动", "ok");
+}
+
+/* ------------------------------------------------------------------ *
+ * 电源 Tab：实时读数 & 后台名单
+ * ------------------------------------------------------------------ */
+async function refreshPowerStatus(){
+  try{
+    // 后端已聚合系统电池读数与电源子系统实时快照，前端只负责渲染。
+    const r = await api("/api/powerstatus");
+    if (!r || r.ok === false){ toast("读取失败：后端未返回电池数据", "err"); return; }
+    const DASH = "\u2014";
+    const set = (sel, txt)=>{ const e = $(sel); if (e) e.textContent = (txt === null || txt === undefined || txt === "") ? DASH : String(txt); };
+    const num = (v)=> (typeof v === "number" && isFinite(v)) ? v : null;
+
+    // ---- 电池读数 ----
+    const lvl = num(r.levelPercent != null ? r.levelPercent : r.level);
+    set("#stBatt", (lvl != null && lvl >= 0) ? lvl + "%" : DASH);
+    set("#stCharging", r.statusText && r.statusText !== "未知" ? r.statusText : (r.charging ? "充电中" : "放电中"));
+    set("#stPlugged", r.pluggedText || DASH);
+    set("#stScreen", r.screenOn ? "亮屏" : "息屏");
+
+    const t = num(r.temperature);
+    set("#stTemp", (t != null && t > -100) ? (t / 10).toFixed(1) + " °C" : DASH);
+
+    const v = num(r.voltage);
+    set("#stVolt", (v != null && v > 0) ? (v / 1000).toFixed(3) + " V" : DASH);
+
+    set("#stHealth", r.healthText || DASH);
+
+    const cur = num(r.currentNow);
+    set("#stCurrent", (cur != null && cur > -1000000) ? (cur / 1000).toFixed(1) + " mA" : DASH);
+
+    // ---- 省电策略运行状态 ----
+    const running = !!r.running;
+    set("#stSubsys", r.subsystemEnabled ? (running ? "运行中" : "已启用（未运行）") : "已关闭");
+    set("#stLevel", running ? (r.policyLevelText || DASH) : DASH);
+    set("#stEventDriven", running ? (r.eventDriven ? "事件驱动" : "周期兜底") : DASH);
+    set("#stKernel", running ? (r.kernelApplied ? "已降频" : "未降频") : DASH);
+    set("#stApplied", running ? (num(r.policyAppliedCount) || 0) : DASH);
+    set("#stRevert", running ? (num(r.policyRevertCount) || 0) : DASH);
+    set("#stBgRestrict", running ? (num(r.backgroundRestrictCount) || 0) : DASH);
+    set("#stFail", running ? (num(r.failOpenCount) || 0) : DASH);
+
+    const la = $("#stLastAction");
+    if (la){
+      if (running && r.lastAction){ la.textContent = "最近动作：" + r.lastAction; }
+      else if (running){ la.textContent = "最近动作：暂无（尚未触发策略切换）"; }
+      else { la.textContent = "最近动作：子系统未运行"; }
+    }
+    toast("已刷新电池状态", "ok");
+  }catch(e){
+    toast("读取失败：" + (e && e.message ? e.message : e), "err");
+  }
+}
+async function loadBgList(){
+  const ta = $("#bgList");
+  if (!ta) return;
+  try{
+    const r = await api("/api/bglist/read");
+    // 后端文件缺失时返回 ok=false（HTTP 仍 200）：按空名单处理。
+    if (r && r.ok === false){ ta.value = ""; toast("名单为空", "ok"); }
+    else { ta.value = (r && r.content) || ""; toast("已读取名单", "ok"); }
+  }catch(e){
+    toast("读取失败：" + (e && e.message ? e.message : e), "err");
+  }
+}
+async function saveBgList(){
+  const ta = $("#bgList");
+  if (!ta) return;
+  const content = ta.value.replace(/\r\n/g, "\n");
+  try{
+    // 直接 POST 内容给后端，由后端完成原子写（tmp+rename），无需 base64 管道。
+    const r = await api("/api/bglist/write", { content: content });
+    if (r && (r.ok === true || r.success === true)) toast("名单已保存", "ok");
+    else toast("已提交保存", "ok");
+  }catch(e){
+    toast("保存失败：" + (e && e.message ? e.message : e), "err");
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * OOM 保护名单：总开关 / 状态 / 应用选择器 / 手动编辑
+ * ------------------------------------------------------------------ */
+let OOM_APPS = [];        // /api/oom/apps 返回的应用清单
+let OOM_SELECTED = new Set(); // 选择器当前勾选（= 名单包名集合）
+
+// 是否显示系统应用：搜索框输入 @sys 时开启。
+let OOM_SHOW_SYS = false;
+
+function oomParseList(text){
+  const out = [];
+  const seen = new Set();
+  String(text || "").replace(/\r\n/g, "\n").split("\n").forEach(function(line){
+    let s = line.trim();
+    if (!s || s.charAt(0) === "#") return;
+    s = s.split("#")[0].trim();
+    if (!/^[A-Za-z][A-Za-z0-9_]*(?:\.[A-Za-z0-9_]+)+$/.test(s)) return;
+    if (seen.has(s)) return;
+    seen.add(s); out.push(s);
+  });
+  return out;
+}
+function oomRenderText(){
+  $("#oomText").value = OOM_SELECTED.size ? (Array.from(OOM_SELECTED).join("\n") + "\n") : "";
+}
+function renderOomApps(){
+  const host = $("#oomAppList");
+  if (!host) return;
+  const q = ($("#oomSearch") && $("#oomSearch").value || "").trim().toLowerCase();
+  OOM_SHOW_SYS = q === "@sys" || q.indexOf("@sys") >= 0;
+  const kw = q.replace("@sys", "").trim();
+  const shown = OOM_APPS.filter(function(a){
+    if (!OOM_SHOW_SYS && a.system) return false;
+    if (!kw) return true;
+    return a.pkg.toLowerCase().indexOf(kw) >= 0;
+  });
+  if (!shown.length){ host.innerHTML = '<div class="oempty">没有匹配的应用</div>'; return; }
+  const frag = document.createDocumentFragment();
+  shown.forEach(function(a){
+    const row = document.createElement("div");
+    row.className = "oapp";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = OOM_SELECTED.has(a.pkg);
+    cb.onchange = function(){
+      if (cb.checked) OOM_SELECTED.add(a.pkg); else OOM_SELECTED.delete(a.pkg);
+      oomRenderText();
+    };
+    const body = document.createElement("div");
+    body.className = "oname";
+    const pk = document.createElement("div");
+    pk.className = "opkg";
+    pk.textContent = a.pkg;
+    body.appendChild(pk);
+    if (a.system){
+      const tag = document.createElement("span");
+      tag.className = "osys"; tag.textContent = "系统";
+      pk.appendChild(tag);
+    }
+    row.appendChild(cb); row.appendChild(body);
+    frag.appendChild(row);
+  });
+  host.innerHTML = "";
+  host.appendChild(frag);
+}
+async function loadOom(){
+  // 状态（总开关 + 受保护进程 + 来自保活名单的自动项）
+  try{
+    const st = await api("/api/oom/status");
+    const m = $("#swOomMaster");
+    if (m) m.checked = !!(st && st.enabled);
+    const prot = (st && st.protected) || [];
+    const auto = (st && st.fromKeepAlive) || [];
+    const bset = new Set((st && st.builtin) || []);
+    const bprot = (st && st.builtinProtected) || [];
+    const el = $("#oomStatus");
+    if (el) {
+      let s = prot.length
+        ? ("当前保护 " + prot.length + " 个应用：" + prot.join("、"))
+        : "当前没有运行中的受保护进程";
+      if (auto.length) s += "（其中 " + auto.length + " 个来自保活名单，自动纳入）";
+      if (bset.size) s += "；内置应用 " + bset.size + " 个始终受保护（不受开关控制）";
+      el.textContent = s;
+    }
+    renderBuiltinChips($("#oomBuiltin"), Array.from(bset), new Set(bprot));
+  }catch(e){ /* 后端未就绪时静默 */ }
+  // 名单文本
+  try{
+    const r = await api("/api/oom/read");
+    OOM_SELECTED = new Set(oomParseList((r && r.content) || ""));
+    oomRenderText();
+    const h = $("#oomFileHint");
+    if (h) h.textContent = (r && r.path) ? ("文件：" + r.path) : "文件：—";
+  }catch(e){ toast("读取 OOM 名单失败：" + (e && e.message ? e.message : e), "err"); }
+  // 应用选择器
+  try{
+    if (!OOM_APPS.length){
+      const r = await api("/api/oom/apps");
+      OOM_APPS = (r && r.apps) || [];
+    }
+    renderOomApps();
+  }catch(e){
+    const host = $("#oomAppList");
+    if (host) host.innerHTML = '<div class="oempty">无法读取应用清单：' + esc(String(e.message||e)) + '</div>';
+  }
+}
+async function saveOom(){
+  const text = ($("#oomText") && $("#oomText").value) || "";
+  const normalized = oomParseList(text);
+  try{
+    const r = await api("/api/oom/write", { content: normalized.join("\n") + "\n" });
+    OOM_SELECTED = new Set((r && r.packages) || normalized);
+    oomRenderText();
+    renderOomApps();
+    toast("OOM 名单已保存（" + OOM_SELECTED.size + " 项）", "ok");
+  }catch(e){
+    toast("保存失败：" + (e && e.message ? e.message : e), "err");
+  }
+}
+/* ------------------------------------------------------------------ *
+ * 保活名单（通知使用权 / 无障碍服务）—— 与 OOM 同一套应用选择器模式
+ * ------------------------------------------------------------------ */
+const KA_KINDS = [
+  { id:"notif", label:"通知使用权", appsHost:"notifKaAppList", search:"notifKaSearch",
+    text:"notifKaText", status:"notifKaStatus", hint:"notifKaFileHint",
+    sw:"swNotifKeepAlive", switchKey:"notif_keepalive_enable" },
+  { id:"a11y", label:"无障碍服务", appsHost:"a11yKaAppList", search:"a11yKaSearch",
+    text:"a11yKaText", status:"a11yKaStatus", hint:"a11yKaFileHint",
+    sw:"swA11yKeepAlive", switchKey:"a11y_keepalive_enable" }
+];
+const KA_APPS = {};      // kind -> apps 列表
+const KA_SELECTED = {};  // kind -> Set(包名)
+const KA_SHOW_SYS = {};  // kind -> bool
+
+// 名单文本解析（与 OOM 同规则：跳空行/注释，校验包名格式，去重）
+function kaParseList(text){
+  const out = []; const seen = new Set();
+  String(text || "").replace(/\r\n/g, "\n").split("\n").forEach(function(line){
+    let s = line.trim();
+    if (!s || s.charAt(0) === "#") return;
+    s = s.split("#")[0].trim();
+    if (!/^[A-Za-z][A-Za-z0-9_]*(?:\.[A-Za-z0-9_]+)+$/.test(s)) return;
+    if (seen.has(s)) return;
+    seen.add(s); out.push(s);
+  });
+  return out;
+}
+function kaRenderText(k){ $("#"+k.text).value = KA_SELECTED[k.id].size ? (Array.from(KA_SELECTED[k.id]).join("\n") + "\n") : ""; }
+function kaRenderApps(k){
+  const host = $("#"+k.appsHost); if (!host) return;
+  const q = ($("#"+k.search) && $("#"+k.search).value || "").trim().toLowerCase();
+  KA_SHOW_SYS[k.id] = q.indexOf("@sys") >= 0;
+  const kw = q.replace("@sys", "").trim();
+  const shown = (KA_APPS[k.id] || []).filter(function(a){
+    if (!KA_SHOW_SYS[k.id] && a.system) return false;
+    if (!kw) return true;
+    const label = (a.label || "").toLowerCase();
+    return a.pkg.toLowerCase().indexOf(kw) >= 0 || label.indexOf(kw) >= 0;
+  });
+  if (!shown.length){ host.innerHTML = '<div class="oempty">没有匹配的应用</div>'; return; }
+  const frag = document.createDocumentFragment();
+  shown.forEach(function(a){
+    const row = document.createElement("div"); row.className = "oapp";
+    const cb = document.createElement("input"); cb.type = "checkbox";
+    cb.checked = KA_SELECTED[k.id].has(a.pkg);
+    cb.onchange = function(){
+      if (cb.checked) KA_SELECTED[k.id].add(a.pkg); else KA_SELECTED[k.id].delete(a.pkg);
+      kaRenderText(k);
+    };
+    const body = document.createElement("div"); body.className = "oname";
+    const pk = document.createElement("div"); pk.className = "opkg"; pk.textContent = a.pkg;
+    if (a.label && a.label !== a.pkg){
+      const lb = document.createElement("div"); lb.style.fontSize = "12.5px"; lb.textContent = a.label;
+      body.appendChild(lb);
+    }
+    if (a.system){ const tag = document.createElement("span"); tag.className = "osys"; tag.textContent = "系统"; pk.appendChild(tag); }
+    if (a.enabled){ const tag = document.createElement("span"); tag.className = "osys"; tag.style.color = "#34c759"; tag.textContent = "已启用"; pk.appendChild(tag); }
+    body.appendChild(pk);
+    row.appendChild(cb); row.appendChild(body); frag.appendChild(row);
+  });
+  host.innerHTML = ""; host.appendChild(frag);
+}
+async function loadKeepAlive(k){
+  // 名单 + 开关 + 状态
+  try{
+    const r = await api("/api/keepalive/get?kind=" + k.id);
+    KA_SELECTED[k.id] = new Set((r && r.list) || []);
+    kaRenderText(k);
+    const sw = $("#"+k.sw); if (sw) sw.checked = !!(r && r.switchEnabled);
+    const h = $("#"+k.hint); if (h) h.textContent = (r && r.file) ? ("文件：" + r.file) : "文件：—";
+    const st = $("#"+k.status);
+    if (st){
+      const items = (r && r.items) || [];
+      const on = items.filter(function(it){ return it.enabled; }).length;
+      st.textContent = items.length
+        ? ("名单 " + items.length + " 项，其中系统已启用 " + on + " 项")
+        : "名单为空";
+    }
+  }catch(e){ toast("读取" + k.label + "保活名单失败：" + (e && e.message ? e.message : e), "err"); }
+  // 内置应用（强制保活，不受开关控制）—— 展示已生效的内置应用
+  try{
+    if (BUILTIN_STATUS){
+      const pkgs = BUILTIN_APPS.map(a=>a.pkg);
+      const hit = k.id === "notif" ? BUILTIN_STATUS.notifKeepAlive : BUILTIN_STATUS.a11yKeepAlive;
+      renderBuiltinChips($("#" + (k.id === "notif" ? "notifKaBuiltin" : "a11yKaBuiltin")), pkgs, new Set(hit || []));
+    } else {
+      const base = (r && r.builtin) || [];
+      renderBuiltinChips($("#" + (k.id === "notif" ? "notifKaBuiltin" : "a11yKaBuiltin")), base);
+    }
+  }catch(e){}
+  // 应用选择器
+  try{
+    if (!KA_APPS[k.id]){
+      const r = await api("/api/keepalive/apps?kind=" + k.id);
+      KA_APPS[k.id] = (r && r.apps) || [];
+    }
+    kaRenderApps(k);
+  }catch(e){
+    const host = $("#"+k.appsHost);
+    if (host) host.innerHTML = '<div class="oempty">无法读取应用清单：' + esc(String(e.message||e)) + '</div>';
+  }
+}
+async function saveKeepAlive(k){
+  const text = ($("#"+k.text) && $("#"+k.text).value) || "";
+  const normalized = kaParseList(text);
+  try{
+    const r = await api("/api/keepalive/set", { kind: k.id, content: normalized.join("\n") + "\n" });
+    KA_SELECTED[k.id] = new Set((r && r.list) || normalized);
+    kaRenderText(k); kaRenderApps(k);
+    toast(k.label + "保活名单已保存（" + KA_SELECTED[k.id].size + " 项）", "ok");
+  }catch(e){ toast("保存失败：" + (e && e.message ? e.message : e), "err"); }
+}
+async function loadKeepAliveAll(){
+  await loadBuiltinApps();
+  for (const k of KA_KINDS) { await loadKeepAlive(k); }
+}
+async function setKeepAliveSwitch(k, on){
+  try{
+    await api("/api/switch/set", { key: k.switchKey, value: on ? "true" : "false" });
+    toast(k.label + "保活" + (on ? " 已开启" : " 已关闭"), "ok");
+    loadKeepAlive(k);
+  }catch(e){
+    toast("切换失败：" + (e && e.message ? e.message : e), "err");
+  }
+}
+async function setOomSwitch(key, on){
+  try{
+    await api("/api/switch/set", { key: key, value: on ? "true" : "false" });
+    toast(on ? "OOM 保护已开启" : "OOM 保护已关闭（还原中）", "ok");
+  }catch(e){
+    toast("切换失败：" + (e && e.message ? e.message : e), "err");
+  }
+}
+/* ------------------------------------------------------------------ *
+ * 模块内置应用（system/app/*）—— 默认保活，不受开关控制
+ *
+ * 后端 /api/builtin/apps 返回模块自带应用清单；/api/builtin/status
+ * 返回它们在 Doze / 多任务 Lock / 通知保活 / 无障碍保活 / OOM 中的命中情况。
+ * 这些保活由守护模块强制执行，与用户开关无关，此处仅作展示与说明。
+ * ------------------------------------------------------------------ */
+let BUILTIN_APPS = [];      // [{pkg,label,installed,apk}]
+let BUILTIN_STATUS = null;  // /api/builtin/status 结果
+
+/** 渲染「内置应用名单」小标签列表（非交互，用于保活/OOM 说明区）。host 为空时静默。 */
+function renderBuiltinChips(host, pkgs, hitSet){
+  if (!host) return;
+  if (!pkgs || !pkgs.length){
+    host.innerHTML = '<div class="bn-empty">未检测到内置应用（模块 system/app 目录为空）</div>';
+    return;
+  }
+  const frag = document.createDocumentFragment();
+  pkgs.forEach(function(p){
+    const sp = document.createElement("span");
+    sp.className = "bnp" + ((hitSet && hitSet.has(p)) ? " on" : "");
+    const code = document.createElement("b");
+    code.textContent = p;
+    sp.appendChild(code);
+    frag.appendChild(sp);
+  });
+  host.innerHTML = "";
+  host.appendChild(frag);
+}
+
+/**
+ * 渲染「设置」页内置应用交互列表：每行一个应用，含
+ *   - 守护 开关（Doze+多任务Lock+通知/无障碍保活）
+ *   - OOM  复选框（含通知/无障碍组件者强制，禁用勾选）
+ * 切换即时 POST /api/builtin/guard/set。
+ */
+function renderBuiltinRows(host, apps){
+  if (!host) return;
+  if (!apps || !apps.length){
+    host.innerHTML = '<div class="bn-empty">未检测到内置应用（模块 system/app 目录为空）</div>';
+    return;
+  }
+  host.innerHTML = "";
+  const frag = document.createDocumentFragment();
+  apps.forEach(function(a){
+    const row = document.createElement("div");
+    row.className = "brow";
+    row.style.cssText = "display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.06)";
+    // 名称
+    const name = document.createElement("div");
+    name.style.cssText = "flex:1;min-width:0";
+    name.innerHTML = '<div style="font-size:13px">' + (a.label||a.pkg) + '</div>' +
+      '<div class="mono" style="font-size:11px;color:var(--dim);word-break:break-all">' + a.pkg + '</div>';
+    row.appendChild(name);
+    // 守护开关
+    const gWrap = document.createElement("label");
+    gWrap.className = "sw";
+    gWrap.title = "内置守护：Doze 白名单 + 多任务 Lock + 通知/无障碍保活";
+    const gIn = document.createElement("input");
+    gIn.type = "checkbox"; gIn.checked = !!a.guard;
+    const gI = document.createElement("i");
+    gWrap.appendChild(gIn); gWrap.appendChild(gI);
+    gIn.addEventListener("change", function(){ setBuiltinGuard(a.pkg, {guard: gIn.checked}, gIn); });
+    const gLbl = document.createElement("span");
+    gLbl.textContent = "守护"; gLbl.style.cssText = "font-size:11px;color:var(--dim)";
+    // OOM 复选框（强制则禁用并勾选）
+    const oWrap = document.createElement("label");
+    oWrap.style.cssText = "display:flex;align-items:center;gap:4px";
+    oWrap.title = a.forcedOom ? "含无障碍/通知组件：强制 OOM 保护（不可关）" : "OOM 保护（可选）";
+    const oIn = document.createElement("input");
+    oIn.type = "checkbox"; oIn.checked = !!(a.forcedOom || a.oomChecked); oIn.disabled = !!a.forcedOom;
+    const oLbl = document.createElement("span");
+    oLbl.textContent = a.forcedOom ? "OOM·强制" : "OOM";
+    oLbl.style.cssText = "font-size:11px;color:" + (a.forcedOom ? "var(--warn)" : "var(--dim)");
+    oIn.addEventListener("change", function(){ setBuiltinGuard(a.pkg, {oom: oIn.checked}, oIn); });
+    oWrap.appendChild(oIn); oWrap.appendChild(oLbl);
+    const right = document.createElement("div");
+    right.style.cssText = "display:flex;align-items:center;gap:12px";
+    const gBox = document.createElement("div");
+    gBox.style.cssText = "display:flex;align-items:center;gap:4px";
+    gBox.appendChild(gLbl); gBox.appendChild(gWrap);
+    right.appendChild(gBox); right.appendChild(oWrap);
+    row.appendChild(right);
+    frag.appendChild(row);
+  });
+  host.appendChild(frag);
+}
+
+/** 写入某内置应用的守护/OOM 开关。 */
+async function setBuiltinGuard(pkg, patch, el){
+  try{
+    const body = Object.assign({pkg: pkg}, patch);
+    const r = await api("/api/builtin/guard/set", body);
+    if (r && r.ok){
+      if (typeof toast === "function") toast("已更新 " + pkg);
+    } else {
+      if (typeof toast === "function") toast("更新失败：" + ((r&&r.message)||""));
+      if (el) el.checked = !el.checked;
+    }
+  }catch(e){
+    if (typeof toast === "function") toast("更新失败：" + (e && e.message ? e.message : e));
+    if (el) el.checked = !el.checked;
+  }
+  // 立即刷新状态与说明区
+  loadBuiltinApps();
+  try{ if (typeof loadOom === "function") loadOom(); }catch(_){}
+  try{ if (typeof loadNotifKeepAlive === "function") loadNotifKeepAlive(); }catch(_){}
+  try{ if (typeof loadA11yKeepAlive === "function") loadA11yKeepAlive(); }catch(_){}
+}
+
+/** 读取内置应用清单 + 命中状态，并渲染到所有展示位。 */
+async function loadBuiltinApps(){
+  try{
+    const r = await api("/api/builtin/apps");
+    BUILTIN_APPS = (r && r.packages) || [];
+    const dir = $("#builtinDir");
+    if (dir) dir.textContent = (r && r.dir) || "—";
+    const guardN = BUILTIN_APPS.filter(function(a){ return a.guard; }).length;
+    const oomN = BUILTIN_APPS.filter(function(a){ return a.oomEffective; }).length;
+    const forcedN = BUILTIN_APPS.filter(function(a){ return a.forcedOom; }).length;
+    const sum = $("#builtinSummary");
+    if (sum){
+      sum.textContent = BUILTIN_APPS.length
+        ? ("共 " + BUILTIN_APPS.length + " 个：启用守护 " + guardN + "，OOM 生效 " + oomN +
+           "（含强制 " + forcedN + "）")
+        : "未检测到内置应用";
+    }
+    renderBuiltinRows($("#builtinList"), BUILTIN_APPS);
+  }catch(e){
+    const sum = $("#builtinSummary");
+    if (sum) sum.textContent = "读取失败：" + (e && e.message ? e.message : e);
+  }
+  // 命中状态（Doze / Lock / 保活 / OOM）
+  let st = null;
+  try{
+    st = await api("/api/builtin/status");
+    BUILTIN_STATUS = st;
+  }catch(e){ BUILTIN_STATUS = null; }
+  const pkgs = BUILTIN_APPS.map(a=>a.pkg);
+  const setOf = (arr)=> new Set(arr || []);
+  if (st){
+    renderBuiltinChips($("#notifKaBuiltin"), pkgs, setOf(st.notifKeepAlive));
+    renderBuiltinChips($("#a11yKaBuiltin"),  pkgs, setOf(st.a11yKeepAlive));
+    renderBuiltinChips($("#oomBuiltin"),     pkgs, setOf(st.oomProtected));
+  } else {
+    renderBuiltinChips($("#notifKaBuiltin"), pkgs);
+    renderBuiltinChips($("#a11yKaBuiltin"),  pkgs);
+    renderBuiltinChips($("#oomBuiltin"),     pkgs);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Shizuku 守护（保活 + 防检测）
+ * ------------------------------------------------------------------ */
+async function loadShizuku(){
+  try{
+    const st = await api("/api/shizuku/status");
+    const ka = $("#swShizukuKeepAlive"); if (ka) ka.checked = !!(st && st.keepaliveEnabled);
+    const de = $("#swShizukuDetect");    if (de) de.checked = !!(st && st.detectEnabled);
+    const cs = $("#swShizukuCleanStarter"); if (cs) cs.checked = !!(st && st.cleanStarter);
+    const el = $("#shizukuStatus");
+    if (el){
+      if (!st || !st.installed){ el.textContent = "未安装 Shizuku"; }
+      else {
+        const main = (st.mainPids || []).length, srv = (st.serverPids || []).length;
+        el.textContent = (st.healthy ? "✅ 正常运行" : "⚠️ 服务端未运行（保活会尝试重启）")
+          + " · 主进程 " + main + " 个 / 服务端 " + srv + " 个"
+          + " · 重启 " + (st.restartCount||0) + " 次 · 清理 " + (st.cleanCount||0) + " 次";
+      }
+    }
+  }catch(e){ /* 静默 */ }
+  scanShizukuResidue();
+}
+async function scanShizukuResidue(){
+  try{
+    const r = await api("/api/shizuku/residue");
+    const el = $("#shizukuResidue");
+    if (!el) return;
+    const found = (r && r.found) || [];
+    if (!found.length){ el.textContent = "未发现痕迹文件（已清理干净）"; return; }
+    el.textContent = "发现 " + found.length + " 个：" + found.map(f =>
+      f.path + " (" + f.size + "B" + (f.guarded ? "，受保护" : "") + ")").join("；");
+  }catch(e){
+    const el = $("#shizukuResidue");
+    if (el) el.textContent = "扫描失败：" + (e && e.message ? e.message : e);
+  }
+}
+async function setShizukuSwitch(key, on){
+  try{
+    await api("/api/switch/set", { key: key, value: on ? "true" : "false" });
+    const names = {
+      shizuku_keepalive_enable: "Shizuku 保活",
+      shizuku_detect_enable: "Shizuku 防检测",
+      shizuku_detect_clean_starter: "starter 清理"
+    };
+    toast((names[key]||key) + (on ? " 已开启" : " 已关闭"), "ok");
+    scanShizukuResidue();
+  }catch(e){
+    toast("切换失败：" + (e && e.message ? e.message : e), "err");
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * 底栏 Tab 切换
+ * ------------------------------------------------------------------ */
+const TAB_TITLES = { home:"概览", switch:"开关", power:"电源", clean:"清理", settings:"设置" };
+function switchTab(name){
+  if (!TAB_TITLES[name]) name = "home";
+  $$(".pane").forEach(p=> p.classList.toggle("active", p.id === "pane-" + name));
+  $$(".tab").forEach(t=> t.classList.toggle("active", t.dataset.tab === name));
+  const nt = $("#navTitle");
+  if (nt) nt.textContent = TAB_TITLES[name];
+  // 概览/电源面板需要时顺手刷新实时读数
+  if (name === "home") refreshOverview();
+  if (name === "power") refreshPowerStatus();
+  if (name === "clean") loadCleanState();
+  if (name === "settings") { loadBuiltinApps(); loadOom(); loadShizuku(); loadKeepAliveAll(); }
+  try{ location.hash = name; }catch(_){}
+  window.scrollTo(0, 0);
+}
+
+/* ------------------------------------------------------------------ *
+ * 清理 Tab：状态 / 规则 / 扫描 / 清理 / 审计 / 审查规则
+ * ------------------------------------------------------------------ */
+let CLEAN_RULES = [];          // /api/rubbish/rules 返回的规则表
+let CLEAN_SELECTED = new Set();// 用户勾选的规则 id
+let CLEAN_LAST = null;         // 最近一次扫描/清理结果
+
+function fmtBytes(n){
+  if (n == null || isNaN(n)) return "—";
+  const u = ["B","KB","MB","GB","TB"]; let i=0; let v=Number(n);
+  while (v >= 1024 && i < u.length-1){ v/=1024; i++; }
+  return (i===0 ? v.toFixed(0) : v.toFixed(v<10?2:1)) + u[i];
+}
+function riskClass(r){ return r === "HIGH" ? "high" : (r === "MEDIUM" ? "medium" : "low"); }
+function riskText(r){ return r === "HIGH" ? "高风险" : (r === "MEDIUM" ? "中风险" : "低风险"); }
+
+async function loadCleanState(){
+  try{
+    const st = await api("/api/rubbish/status");
+    const m = $("#swCleanMaster"), s = $("#swCleanScreenOff"), f = $("#swCleanForce");
+    if (m) m.checked = !!(st && st.masterEnabled);
+    if (s) s.checked = !!(st && st.screenOffOnly);
+    if (f) f.checked = !!(st && st.forceWhenRunning);
+  }catch(e){ /* 后端未就绪时静默 */ }
+  try{
+    const r = await api("/api/rubbish/rules");
+    CLEAN_RULES = (r && r.rules) || [];
+    // 首次进入：按每条规则自身的 enabled 初始化勾选
+    if (CLEAN_SELECTED.size === 0){
+      CLEAN_RULES.forEach(x=>{ if (x.enabled) CLEAN_SELECTED.add(x.id); });
+    }
+    renderCleanGroups();
+  }catch(e){
+    const host = $("#cleanGroups");
+    if (host) host.innerHTML = '<div class="empty">无法读取规则表：' + esc(String(e.message||e)) + '</div>';
+  }
+}
+
+function renderCleanGroups(){
+  const host = $("#cleanGroups");
+  if (!host) return;
+  host.innerHTML = "";
+  const groups = [];
+  const idx = {};
+  CLEAN_RULES.forEach(r=>{
+    if (!(r.group in idx)){ idx[r.group] = groups.length; groups.push({key:r.group, title:r.groupTitle||r.group, rules:[]}); }
+    groups[idx[r.group]].rules.push(r);
+  });
+  groups.forEach(g=>{
+    const sec = document.createElement("div");
+    sec.className = "section";
+    const h = document.createElement("div");
+    h.className = "grouphdr";
+    h.textContent = g.title;
+    sec.appendChild(h);
+    const list = document.createElement("div");
+    list.className = "list";
+    g.rules.forEach(r=> list.appendChild(renderCleanCell(r)));
+    sec.appendChild(list);
+    host.appendChild(sec);
+  });
+}
+
+function renderCleanCell(r){
+  const cell = document.createElement("div");
+  cell.className = "cell cleanrule";
+  cell.dataset.rule = r.id;
+  const ic = document.createElement("div");
+  ic.className = "ic";
+  ic.textContent = r.group === "wechat" ? "💬" : (r.group === "qq" ? "🐧" : "🧹");
+  ic.style.background = r.group === "wechat" ? "#07c160" : (r.group === "qq" ? "#12b7f5" : "#8e8e93");
+  cell.appendChild(ic);
+
+  const body = document.createElement("div");
+  body.className = "body";
+  const k = document.createElement("div");
+  k.className = "k";
+  k.innerHTML = esc(r.name) + '<span class="risk ' + riskClass(r.risk) + '">' + riskText(r.risk) + '</span>';
+  body.appendChild(k);
+  const size = document.createElement("div");
+  size.className = "size";
+  size.dataset.sizeFor = r.id;
+  size.textContent = "未扫描";
+  body.appendChild(size);
+  if (r.note){
+    const n = document.createElement("div");
+    n.className = "note";
+    n.textContent = r.note;
+    body.appendChild(n);
+  }
+  cell.appendChild(body);
+
+  const sw = document.createElement("label");
+  sw.className = "sw";
+  const inp = document.createElement("input");
+  inp.type = "checkbox";
+  inp.checked = CLEAN_SELECTED.has(r.id);
+  inp.onchange = ()=>{
+    if (inp.checked) CLEAN_SELECTED.add(r.id); else CLEAN_SELECTED.delete(r.id);
+    // 规则开关必须即时持久化到 switches.conf：以前只改内存 CLEAN_SELECTED，
+    // 退出 UI 就丢，表现为“打开 QQ 接收文件后返回又复原”。
+    persistCleanRule(r, inp);
+  };
+  const i = document.createElement("i");
+  sw.appendChild(inp); sw.appendChild(i);
+  cell.appendChild(sw);
+  return cell;
+}
+
+/**
+ * 把单条清理规则的勾选状态写入 switches.conf（后端 /api/switch/set）。
+ * 使用规则自带 switchKey；失败时回读后端真实值并纠正界面，避免“看起来生效”。
+ */
+async function persistCleanRule(r, inp){
+  const key = r && r.switchKey;
+  if (!key) return;
+  const on = !!inp.checked;
+  try{
+    await api("/api/switch/set", { key: key, value: on ? "true" : "false" });
+    await api("/api/reload").catch(()=>{});
+    toast((r.name || r.id) + (on ? "：已开启" : "：已关闭"), "ok");
+    diag("clean_rule_toggle", { key: key, on: on });
+  }catch(e){
+    toast("保存失败：" + (e.message||e), "err");
+    diag("clean_rule_toggle_fail", { key: key, on: on, err: String(e && e.message || e) });
+    // 失败：回读后端真实值并纠正勾选
+    try{
+      const rr = await api("/api/rubbish/rules");
+      const found = ((rr && rr.rules) || []).find(x=> x.id === r.id);
+      const real = !!(found && found.enabled);
+      if (inp.checked !== real){
+        inp.checked = real;
+        if (real) CLEAN_SELECTED.add(r.id); else CLEAN_SELECTED.delete(r.id);
+      }
+    }catch(_){}
+  }
+}
+
+/** 渲染一条规则的大小/状态文案（统一 scan、preview 结果）。 */
+function renderRuleSize(x){
+  const el = document.querySelector('[data-size-for="' + x.id + '"]');
+  if (!el) return;
+  if (x.skipped){ el.textContent = "跳过：" + x.skipReason; }
+  else if (x.listOnly){ el.textContent = "仅列出 " + x.files + " 文件 · " + fmtBytes(x.bytes) + "（不计入可清理）"; }
+  else { el.textContent = x.files + " 文件 · " + fmtBytes(x.bytes); }
+}
+
+/** 轮询进度：更新进度条、当前规则、当前扫描路径。返回 Promise（任务结束时 resolve）。 */
+function pollCleanProgress(){
+  return new Promise((resolve)=>{
+    const bar = $("#cleanBar"), sub = $("#cleanSub");
+    const prog = $("#cleanProg"), progRule = $("#cleanProgRule"), progPath = $("#cleanProgPath");
+    let lastShown = "";
+    const tick = async ()=>{
+      let p = null;
+      try{ p = await api("/api/rubbish/progress"); }catch(_){}
+      if (p && p.ok){
+        const verb = p.dryRun ? "扫描" : "清理";
+        if (prog) prog.style.display = "";
+        if (progRule){
+          const rt = (p.rulesTotal>0) ? ("（规则 " + (p.rulesDone+1) + "/" + p.rulesTotal + "）") : "";
+          progRule.textContent = verb + "中 " + (p.ruleName || "…") + rt
+            + " · 已命中 " + (p.hitFiles||0) + " 个 · " + fmtBytes(p.hitBytes||0);
+        }
+        if (progPath){
+          const path = p.currentPath || "";
+          if (path && path !== lastShown){ lastShown = path; }
+          progPath.textContent = path ? ("正在扫描：" + path) : "";
+        }
+        // 进度条：优先用分片进度，其次用规则进度
+        if (bar){
+          let pct = 0;
+          if (p.shardTotal>0) pct = Math.min(99, Math.round(p.shardDone/p.shardTotal*100));
+          else if (p.rulesTotal>0) pct = Math.min(99, Math.round(p.rulesDone/p.rulesTotal*100));
+          bar.style.width = Math.max(5, pct) + "%";
+        }
+        if (sub) sub.textContent = verb + "中… 可先浏览其它页面";
+      }
+      if (!p || !p.running){ resolve(); return; }
+      setTimeout(tick, 600);
+    };
+    tick();
+  });
+}
+
+async function doCleanScan(){
+  if (CLEAN_SELECTED.size === 0){ toast("请先勾选要扫描的类型", "err"); return; }
+  const btn = $("#btnCleanScan"); if (btn) btn.disabled = true;
+  const bar = $("#cleanBar"); if (bar) bar.style.width = "5%";
+  const sub = $("#cleanSub"); if (sub) sub.textContent = "启动扫描…";
+  const sizeEl = $("#cleanSize"); if (sizeEl) sizeEl.textContent = "扫描中…";
+  try{
+    const s = await api("/api/rubbish/scan", { rules: Array.from(CLEAN_SELECTED) });
+    if (s && s.ok === false) throw new Error(s.message || "无法启动扫描");
+    await pollCleanProgress();
+    const r = await api("/api/rubbish/result");
+    if (r && r.ok === false) throw new Error(r.message || "无扫描结果");
+    CLEAN_LAST = r;
+    if (bar) bar.style.width = "100%";
+    const total = (r && r.totalBytes) || 0;
+    if (sizeEl) sizeEl.textContent = fmtBytes(total);
+    if (sub) sub.textContent = "可清理 " + ((r && r.totalFiles) || 0) + " 个文件 · " + fmtBytes(total);
+    (r && r.rules || []).forEach(renderRuleSize);
+    const prog = $("#cleanProg"); if (prog) prog.style.display = "none";
+    toast("扫描完成：" + fmtBytes(total), "ok");
+  }catch(e){
+    if (bar) bar.style.width = "0";
+    if (sub) sub.textContent = "扫描失败";
+    if (sizeEl) sizeEl.textContent = "—";
+    toast("扫描失败：" + (e.message||e), "err");
+  }finally{
+    if (btn) btn.disabled = false;
+    const prog = $("#cleanProg"); if (prog) prog.style.display = "none";
+    setTimeout(()=>{ if (bar) bar.style.width = "0"; }, 1200);
+  }
+}
+
+function confirmModal(title, body, onOk){
+  const m = $("#cleanModal");
+  if (!m){ onOk(); return; }
+  $("#cmTitle").textContent = title;
+  $("#cmBody").innerHTML = body;
+  m.classList.add("show");
+  const ok = $("#cmOk"), cancel = $("#cmCancel");
+  const close = ()=>{ m.classList.remove("show"); ok.onclick = null; cancel.onclick = null; };
+  ok.onclick = ()=>{ close(); onOk(); };
+  cancel.onclick = close;
+}
+
+/**
+ * 清理预览：请求后端列出「点击确认后将被删除」的具体文件，弹窗显示。
+ * 用户确认后才真正执行清理。
+ */
+async function doCleanRun(){
+  if (CLEAN_SELECTED.size === 0){ toast("请先勾选要清理的类型", "err"); return; }
+  const btn = $("#btnCleanRun"); if (btn) btn.disabled = true;
+  const sub = $("#cleanSub"); if (sub) sub.textContent = "生成预览…";
+  try{
+    const p = await api("/api/rubbish/preview", { rules: Array.from(CLEAN_SELECTED), max: 200 });
+    if (p && p.ok === false) throw new Error(p.message || "预览失败");
+    showCleanPreview(p);
+  }catch(e){
+    toast("预览失败：" + (e.message||e), "err");
+    if (sub) sub.textContent = "预览失败";
+  }finally{
+    if (btn) btn.disabled = false;
+  }
+}
+
+/** 渲染预览弹窗。 */
+function showCleanPreview(p){
+  const m = $("#prevModal");
+  if (!m){ return; }
+  const total = (p && p.totalBytes) || 0;
+  const totalFiles = (p && p.totalFiles) || 0;
+  $("#prevTitle").textContent = "清理预览";
+  const risky = CLEAN_RULES.filter(r=> CLEAN_SELECTED.has(r.id) && r.risk !== "LOW");
+  $("#prevSub").innerHTML = "将删除 <b>" + totalFiles + "</b> 个文件 / 共 <b>" + fmtBytes(total) + "</b>，删除后不可恢复。"
+    + (risky.length ? '<br/><b style="color:var(--warn)">含中/高风险项：' + risky.map(r=>esc(r.name)).join("、") + '</b>' : "");
+
+  const host = $("#prevList");
+  if (!host) return;
+  const items = (p && p.rules) || [];
+  if (items.length === 0){ host.innerHTML = '<div class="pempty">没有匹配的可清理项。</div>'; }
+  else {
+    let html = "";
+    items.forEach(x=>{
+      if (x.skipped) return;
+      const samples = x.samples || [];
+      if (samples.length === 0 && x.files === 0) return; // 无内容规则不展示
+      html += '<div class="pgroup">' + esc(x.name) + "（" + x.files + " 个 · " + fmtBytes(x.bytes)
+        + (x.listOnly ? "，仅列出" : "") + "）</div>";
+      if (samples.length === 0){
+        html += '<div class="pfile">（无可展开的具体路径）</div>';
+      } else {
+        samples.forEach(s=>{ html += '<div class="pfile">' + esc(s) + '</div>'; });
+        if (x.files > samples.length){
+          html += '<div class="pmore">… 等共 ' + x.files + ' 个（仅预览前 ' + samples.length + ' 个）</div>';
+        }
+      }
+    });
+    host.innerHTML = html || '<div class="pempty">没有匹配的可清理项。</div>';
+  }
+
+  m.classList.add("show");
+  const ok = $("#prevOk"), cancel = $("#prevCancel");
+  const close = ()=>{ m.classList.remove("show"); ok.onclick = null; cancel.onclick = null; };
+  cancel.onclick = close;
+  ok.onclick = ()=>{ close(); runCleanNow(); };
+}
+
+/** 真正执行清理（异步 + 进度轮询）。 */
+async function runCleanNow(){
+  const btn = $("#btnCleanRun"); if (btn) btn.disabled = true;
+  const bar = $("#cleanBar"); if (bar) bar.style.width = "5%";
+  const sub = $("#cleanSub"); if (sub) sub.textContent = "启动清理…";
+  try{
+    const s = await api("/api/rubbish/clean", { rules: Array.from(CLEAN_SELECTED) });
+    if (s && s.ok === false) throw new Error(s.message || "无法启动清理");
+    await pollCleanProgress();
+    const r = await api("/api/rubbish/result");
+    if (r && r.ok === false) throw new Error(r.message || "无清理结果");
+    CLEAN_LAST = r;
+    if (bar) bar.style.width = "100%";
+    const total = (r && r.totalBytes) || 0;
+    const sizeEl = $("#cleanSize"); if (sizeEl) sizeEl.textContent = fmtBytes(total);
+    if (sub) sub.textContent = "本次已释放 " + ((r && r.totalFiles) || 0) + " 个文件 · " + fmtBytes(total);
+    toast("清理完成，释放 " + fmtBytes(total), "ok");
+    await doCleanScan();
+  }catch(e){
+    toast("清理失败：" + (e.message||e), "err");
+    if (sub) sub.textContent = "清理失败";
+  }finally{
+    if (btn) btn.disabled = false;
+    const prog = $("#cleanProg"); if (prog) prog.style.display = "none";
+  }
+}
+
+async function showCleanHistory(){
+  try{
+    const r = await api("/api/rubbish/history?lines=120");
+    const lines = (r && r.lines) || [];
+    const body = lines.length
+      ? '<div class="audit">' + esc(lines.join("\n")) + '</div>'
+      : '<p>暂无审计记录。</p>';
+    confirmModal("清理审计日志", body, ()=>{});
+    const ok = $("#cmOk"); if (ok) ok.textContent = "关闭";
+  }catch(e){ toast("读取失败：" + (e.message||e), "err"); }
+}
+
+async function showCleanGuard(){
+  try{
+    const r = await api("/api/rubbish/guard/read");
+    const content = (r && r.content) || "";
+    const body = '<p>违禁路径（deny_path）与违禁词（deny_word），只增拒绝：</p>'
+      + '<textarea id="guardText" style="min-height:180px">' + esc(content) + '</textarea>';
+    confirmModal("审查规则", body, ()=>{});
+    const ok = $("#cmOk"); if (ok) ok.textContent = "保存";
+    ok.onclick = async ()=>{
+      const ta = $("#guardText"); if (!ta) return;
+      try{
+        await api("/api/rubbish/guard/write", { content: ta.value });
+        toast("审查规则已保存并立即生效", "ok");
+        $("#cleanModal").classList.remove("show");
+      }catch(e){ toast("保存失败：" + (e.message||e), "err"); }
+    };
+  }catch(e){ toast("读取失败：" + (e.message||e), "err"); }
+}
+
+// ==================== 在线规则（多源直链 + 定期拉取）====================
+let OL_SOURCES = [];
+
+function toggleOnlinePanel(){
+  const p = $("#onlinePanel"); if (!p) return;
+  const ed = $("#editorPanel"); if (ed) ed.style.display = "none";
+  const show = p.style.display === "none";
+  p.style.display = show ? "" : "none";
+  if (show) loadOnlineRules();
+}
+
+function toggleEditorPanel(){
+  const p = $("#editorPanel"); if (!p) return;
+  const ol = $("#onlinePanel"); if (ol) ol.style.display = "none";
+  const show = p.style.display === "none";
+  p.style.display = show ? "" : "none";
+}
+
+async function loadOnlineRules(){
+  try{
+    const r = await api("/api/rules/online/list");
+    OL_SOURCES = (r && r.sources) || [];
+    const sw = $("#swOnlineRules"); if (sw) sw.checked = !!(r && r.masterEnabled);
+    renderOnlineSources();
+  }catch(e){ toast("读取在线规则失败：" + (e.message||e), "err"); }
+}
+
+function fmtTime(ms){
+  if (!ms) return "—";
+  try{ return new Date(ms).toLocaleString(); }catch(_){ return String(ms); }
+}
+
+function renderOnlineSources(){
+  const box = $("#olList"); if (!box) return;
+  if (!OL_SOURCES.length){ box.innerHTML = '<div class="sfoot">暂无规则源。填写名称与直链后点击「添加并拉取」。</div>'; return; }
+  let h = '<div class="section"><div class="stitle">已配置的规则源（' + OL_SOURCES.length + '）</div><div class="list">';
+  OL_SOURCES.forEach(s=>{
+    const status = s.lastStatus === "SUCCESS" ? "成功" : (s.lastStatus === "FAILED" ? "失败" : "未拉取");
+    const stColor = s.lastStatus === "SUCCESS" ? "#30d158" : (s.lastStatus === "FAILED" ? "#ff453a" : "#8e8e93");
+    h += '<div class="cell">'
+      +   '<div class="ic" style="background:' + stColor + '">⇩</div>'
+      +   '<div class="body"><div class="k">' + esc(s.name || "规则源") + '</div>'
+      +     '<div class="d">' + esc(s.url) + '</div>'
+      +     '<div class="d">状态：' + status + ' · 规则 ' + (s.ruleCount||0) + ' 条 · 间隔 ' + (s.intervalHours||24) + 'h'
+      +       ' · 上次 ' + esc(fmtTime(s.lastFetchMs)) + (s.lastError ? (' · ' + esc(s.lastError)) : '') + '</div></div>'
+      +   '<div class="val">'
+      +     '<label class="sw"><input type="checkbox" data-olen="' + esc(s.id) + '"' + (s.enabled ? ' checked' : '') + '><i></i></label>'
+      +     '<button class="btn sm ghost" data-olfetch="' + esc(s.id) + '">拉取</button>'
+      +     '<button class="btn sm ghost" data-oled="' + esc(s.id) + '">编辑</button>'
+      +     '<button class="btn sm ghost" data-olimp="' + esc(s.id) + '">导入到编辑器</button>'
+      +     '<button class="btn sm ghost" data-olrm="' + esc(s.id) + '">删除</button>'
+      +   '</div></div>';
+  });
+  h += '</div></div>';
+  box.innerHTML = h;
+
+  $$("[data-olen]").forEach(el=> el.onchange = ()=> setOnlineEnabled(el.dataset.olen, el.checked));
+  $$("[data-olfetch]").forEach(el=> el.onclick = ()=> fetchOnlineSource(el.dataset.olfetch));
+  $$("[data-oled]").forEach(el=> el.onclick = ()=> editOnlineSource(el.dataset.oled));
+  $$("[data-olimp]").forEach(el=> el.onclick = ()=> importOnlineToEditor(el.dataset.olimp));
+  $$("[data-olrm]").forEach(el=> el.onclick = ()=> removeOnlineSource(el.dataset.olrm));
+}
+
+async function setOnlineEnabled(id, on){
+  try{
+    await api("/api/rules/online/update", { id: id, enabled: on ? "true" : "false" });
+    toast(on ? "已启用该规则源" : "已禁用该规则源", "ok");
+    await loadOnlineRules();
+  }catch(e){ toast("保存失败：" + (e.message||e), "err"); }
+}
+
+async function fetchOnlineSource(id){
+  toast("正在拉取规则…", "ok");
+  try{
+    const r = await api("/api/rules/online/fetch", { id: id });
+    toast(r && r.message ? r.message : "拉取完成", (r && r.ok) ? "ok" : "err");
+    await loadOnlineRules();
+  }catch(e){ toast("拉取失败：" + (e.message||e), "err"); }
+}
+
+async function editOnlineSource(id){
+  const s = OL_SOURCES.find(x=> x.id === id); if (!s) return;
+  const body = '<p>编辑规则源信息：</p>'
+    + '<input class="inp" id="olEdName" placeholder="名称" style="width:100%;margin-bottom:6px" value="' + esc(s.name||"") + '">'
+    + '<input class="inp" id="olEdUrl" placeholder="直链" style="width:100%;margin-bottom:6px" value="' + esc(s.url||"") + '">'
+    + '<label class="d" style="color:var(--dim)">间隔(小时)</label> '
+    + '<input class="inp" id="olEdInterval" type="number" min="1" max="720" value="' + (s.intervalHours||24) + '" style="width:90px">';
+  confirmModal("编辑规则源", body, ()=>{});
+  const ok = $("#cmOk"); if (ok) ok.textContent = "保存";
+  ok.onclick = async ()=>{
+    const name = ($("#olEdName")||{}).value || "";
+    const url = ($("#olEdUrl")||{}).value || "";
+    const interval = ($("#olEdInterval")||{}).value || "24";
+    try{
+      await api("/api/rules/online/update", { id: id, name: name, url: url, intervalHours: interval });
+      toast("已保存", "ok");
+      $("#cleanModal").classList.remove("show");
+      await loadOnlineRules();
+    }catch(e){ toast("保存失败：" + (e.message||e), "err"); }
+  };
+}
+
+async function removeOnlineSource(id){
+  const s = OL_SOURCES.find(x=> x.id === id); if (!s) return;
+  confirmModal("删除规则源", '<p>确定删除「' + esc(s.name||"规则源") + '」？其缓存规则将一并移除。</p>', ()=>{});
+  const ok = $("#cmOk"); if (ok) ok.textContent = "删除";
+  ok.onclick = async ()=>{
+    try{
+      await api("/api/rules/online/remove", { id: id });
+      toast("已删除", "ok");
+      $("#cleanModal").classList.remove("show");
+      await loadOnlineRules();
+    }catch(e){ toast("删除失败：" + (e.message||e), "err"); }
+  };
+}
+
+async function addOnlineSource(){
+  const name = ($("#olName")||{}).value || "";
+  const url = ($("#olUrl")||{}).value || "";
+  const interval = ($("#olInterval")||{}).value || "24";
+  const msg = $("#olMsg");
+  if (!url.trim()){ toast("请填写规则直链", "err"); return; }
+  if (msg) msg.textContent = "正在添加并拉取…";
+  try{
+    const r = await api("/api/rules/online/add", { name: name, url: url, intervalHours: interval, enabled: "true" });
+    if (msg) msg.textContent = (r && r.message) || "已添加";
+    toast((r && r.ok) ? "已添加并拉取" : ("已添加：" + ((r && r.message)||"")), (r && r.ok) ? "ok" : "err");
+    const u = $("#olUrl"); if (u) u.value = "";
+    const n = $("#olName"); if (n) n.value = "";
+    await loadOnlineRules();
+  }catch(e){
+    if (msg) msg.textContent = "失败：" + (e.message||e);
+    toast("添加失败：" + (e.message||e), "err");
+  }
+}
+
+async function importOnlineToEditor(id){
+  try{
+    const r = await api("/api/rules/online/content?id=" + encodeURIComponent(id));
+    const ta = $("#edText"); if (ta && r && r.content) ta.value = r.content;
+    const ed = $("#editorPanel"); if (ed) ed.style.display = "";
+    toast("已载入到编辑器", "ok");
+  }catch(e){ toast("载入失败：" + (e.message||e), "err"); }
+}
+
+// ==================== 规则编辑器 ====================
+function edSetMsg(text, isErr){
+  const m = $("#edMsg"); if (m){ m.textContent = text || ""; m.style.color = isErr ? "#ff453a" : "var(--dim)"; }
+}
+
+function edSetMeta(text){
+  const m = $("#edMeta"); if (m) m.textContent = text || "";
+}
+
+async function edValidate(){
+  const ta = $("#edText"); if (!ta) return null;
+  edSetMsg("正在校验…");
+  try{
+    const r = await api("/api/rules/validate", { content: ta.value });
+    if (r && r.ok){
+      edSetMsg("校验通过：" + (r.name||"") + "，共 " + (r.groups||0) + " 条规则", false);
+      edSetMeta("规范化后的规则已就绪，可保存或导出。");
+      return r;
+    }
+    edSetMsg("校验失败：" + ((r && r.message) || "未知错误"), true);
+    return null;
+  }catch(e){ edSetMsg("校验失败：" + (e.message||e), true); return null; }
+}
+
+async function edExport(){
+  try{
+    const r = await api("/api/rules/user/export");
+    const ta = $("#edText"); if (ta && r && r.content) ta.value = r.content;
+    edSetMsg("已导出合并规则（" + ((r && r.groups)||0) + " 条），可直接编辑或复制分享。", false);
+    edSetMeta("导出内容包含内建 + 在线 + 用户规则；修改后「保存为用户规则」即生效。");
+    toast("已导出规则", "ok");
+  }catch(e){ toast("导出失败：" + (e.message||e), "err"); }
+}
+
+async function edLoadUser(){
+  try{
+    const r = await api("/api/rules/user/get");
+    const ta = $("#edText"); if (ta && r && r.content) ta.value = r.content;
+    edSetMsg("已载入用户规则。", false);
+    edSetMeta(r && r.path ? ("保存位置：" + r.path) : "");
+  }catch(e){ toast("载入失败：" + (e.message||e), "err"); }
+}
+
+async function edImport(){
+  const ta = $("#edText"); if (!ta) return;
+  const ok = await edValidate(); if (!ok) return;
+  try{
+    const r = await api("/api/rules/import", { content: ta.value, target: "user" });
+    edSetMsg("导入成功：" + ((r && r.message) || ""), false);
+    toast("已导入为用户规则", "ok");
+    await loadCleanState();
+  }catch(e){ edSetMsg("导入失败：" + (e.message||e), true); }
+}
+
+async function edFromOnline(){
+  if (!OL_SOURCES.length){ await loadOnlineRules(); }
+  if (!OL_SOURCES.length){ toast("暂无在线规则源，请先添加", "err"); return; }
+  const opts = OL_SOURCES.map(s=> '<option value="' + esc(s.id) + '">' + esc(s.name||s.id) + '</option>').join("");
+  const body = '<p>选择一个在线源，导入其缓存规则到编辑器：</p><select id="edSrcSel">' + opts + '</select>';
+  confirmModal("从在线源导入", body, ()=>{});
+  const ok = $("#cmOk"); if (ok) ok.textContent = "导入";
+  ok.onclick = async ()=>{
+    const sel = $("#edSrcSel"); const id = sel ? sel.value : "";
+    $("#cleanModal").classList.remove("show");
+    if (id) await importOnlineToEditor(id);
+  };
+}
+
+async function edSave(){
+  const ta = $("#edText"); if (!ta) return;
+  const ok = await edValidate(); if (!ok) return;
+  try{
+    await api("/api/rules/user/set", { content: ta.value });
+    edSetMsg("已保存为用户规则并立即生效。", false);
+    toast("用户规则已保存", "ok");
+    await loadCleanState();
+  }catch(e){ edSetMsg("保存失败：" + (e.message||e), true); }
+}
+
+async function edCopy(){
+  const ta = $("#edText"); if (!ta) return;
+  try{
+    if (navigator.clipboard && navigator.clipboard.writeText){ await navigator.clipboard.writeText(ta.value); }
+    else { ta.select(); document.execCommand("copy"); }
+    toast("已复制到剪贴板", "ok");
+  }catch(e){ toast("复制失败，请手动选择复制", "err"); }
+}
+
+function edDownload(){
+  const ta = $("#edText"); if (!ta) return;
+  try{
+    const blob = new Blob([ta.value], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "zhangprotect-rules.json";
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 0);
+    toast("已下载 JSON", "ok");
+  }catch(e){ toast("下载失败：" + (e.message||e), "err"); }
+}
+
+async function otaCheck(){
+  const info = $("#otaInfo");
+  try{
+    const s = await api("/api/ota/status");
+    if (info){
+      info.textContent = "模块目录 " + (s.modDir || "?") + "\nMain.dex " + (s.dexSize||0) + "B  " +
+        String(s.dexMd5||"").slice(0,8) + "\n界面 " + (s.uiSize||0) + "B";
+      info.style.whiteSpace = "pre-line";
+    }
+    toast("已读取当前版本", "ok");
+    diag("ota_check", { dexMd5: s.dexMd5 });
+  }catch(e){
+    if (info) info.textContent = "读取失败：" + (e.message||e);
+    toast("检查失败：" + (e.message||e), "err");
+  }
+}
+
+async function otaUpdate(){
+  const btn = $("#btnOtaUpdate");
+  if (btn){ btn.disabled = true; btn.textContent = "更新中…"; }
+  toast("正在下载并写入模块目录…", "ok");
+  diag("ota_update_start", {});
+  try{
+    const r = await api("/api/ota/update", {});
+    toast("更新完成，正在重启 daemon…", "ok");
+    diag("ota_update_ok", { dexMd5: r && r.dexMd5 });
+    // daemon 会被后台重启：轮询等待其重新上线，然后刷新页面加载新 UI。
+    let ok = false;
+    for (let i = 0; i < 30; i++){
+      await new Promise(res=> setTimeout(res, 1000));
+      try { await api("/api/ping"); ok = true; break; } catch(_){}
+    }
+    if (ok){ toast("新版本已生效，刷新页面…", "ok"); setTimeout(()=> location.reload(), 800); }
+    else { toast("daemon 未在预期时间内恢复，请手动重开 WebUI", "err"); }
+  }catch(e){
+    toast("更新失败：" + (e.message||e), "err");
+    diag("ota_update_fail", { err: String(e && e.message || e) });
+  }finally{
+    if (btn){ btn.disabled = false; btn.textContent = "更新"; }
+  }
+}
+
+async function setCleanSwitch(key, on){
+  try{
+    // 关键：必须先写盘（/api/switch/set），否则只是界面勾选，
+    // reload + 回读会把界面恢复到后端旧值，表现为“开关打不开”。
+    await api("/api/switch/set", { key: key, value: on ? "true" : "false" });
+    await api("/api/reload").catch(()=>{});
+    // 立即回读并同步三个开关的真实状态，避免“看起来没生效”。
+    await loadCleanState();
+    toast(on ? "已开启" : "已关闭", "ok");
+    diag("clean_toggle", { key: key, on: !!on });
+  }catch(e){
+    toast("保存失败：" + (e.message||e), "err");
+    diag("clean_toggle_fail", { key: key, on: !!on, err: String(e && e.message || e) });
+    // 失败则回读后端真实值，纠正被误置的界面状态
+    try{ await loadCleanState(); }catch(_){}
+  }
+}
+
+
+function bind(){
+  const bs = $("#btnSave");   if (bs) bs.onclick = save;
+  const br = $("#btnReload"); if (br) br.onclick = load;
+  const bv = $("#btnRevert"); if (bv) bv.onclick = revert;
+  const br2 = $("#btnReload2"); if (br2) br2.onclick = load;
+  const bv2 = $("#btnRevert2"); if (bv2) bv2.onclick = revert;
+  const bp = $("#btnPowerRefresh"); if (bp) bp.onclick = refreshPowerStatus;
+  const bl = $("#btnBgLoad"); if (bl) bl.onclick = loadBgList;
+  const bgs = $("#btnBgSave"); if (bgs) bgs.onclick = saveBgList;
+  // 清理 Tab 事件
+  const bcs = $("#btnCleanScan"); if (bcs) bcs.onclick = doCleanScan;
+  const bcr = $("#btnCleanRun"); if (bcr) bcr.onclick = doCleanRun;
+  const bch = $("#btnCleanHist"); if (bch) bch.onclick = showCleanHistory;
+  const bcg = $("#btnCleanGuard"); if (bcg) bcg.onclick = showCleanGuard;
+  // 在线规则 / 规则编辑器
+  const bor = $("#btnOnlineRules"); if (bor) bor.onclick = toggleOnlinePanel;
+  const bre = $("#btnRuleEditor"); if (bre) bre.onclick = toggleEditorPanel;
+  const bors = $("#swOnlineRules"); if (bors) bors.onchange = ()=> setCleanSwitch("online_rules_enable", bors.checked);
+  const boa = $("#btnOlAdd"); if (boa) boa.onclick = addOnlineSource;
+  const bev = $("#btnEdValidate"); if (bev) bev.onclick = edValidate;
+  const bex = $("#btnEdExport"); if (bex) bex.onclick = edExport;
+  const beu = $("#btnEdUser"); if (beu) beu.onclick = edLoadUser;
+  const bei = $("#btnEdImport"); if (bei) bei.onclick = edImport;
+  const beo = $("#btnEdFromOnline"); if (beo) beo.onclick = edFromOnline;
+  const bec = $("#btnEdCopy"); if (bec) bec.onclick = edCopy;
+  const bed = $("#btnEdDownload"); if (bed) bed.onclick = edDownload;
+  const bes = $("#btnEdSave"); if (bes) bes.onclick = edSave;
+  const m = $("#swCleanMaster"); if (m) m.onchange = ()=> setCleanSwitch("rubbish_clean_enable", m.checked);
+  const so = $("#swCleanScreenOff"); if (so) so.onchange = ()=> setCleanSwitch("rubbish_clean_screen_off_only", so.checked);
+  const fc = $("#swCleanForce"); if (fc) fc.onchange = ()=> setCleanSwitch("rubbish_force_when_running", fc.checked);
+  // 在线更新（免重启）
+  const boc = $("#btnOtaCheck");  if (boc) boc.onclick = otaCheck;
+  const bou = $("#btnOtaUpdate"); if (bou) bou.onclick = otaUpdate;
+  // OOM 保护名单
+  const oom = $("#swOomMaster"); if (oom) oom.onchange = ()=> setOomSwitch("oom_protect_enable", oom.checked);
+  const oomR = $("#btnOomRefresh"); if (oomR) oomR.onclick = loadOom;
+  const oomS = $("#btnOomSave"); if (oomS) oomS.onclick = saveOom;
+  const oomQ = $("#oomSearch"); if (oomQ) oomQ.oninput = renderOomApps;
+  // 保活名单（通知使用权 / 无障碍服务）
+  KA_KINDS.forEach(function(k){
+    const sw = $("#"+k.sw); if (sw) sw.onchange = ()=> setKeepAliveSwitch(k, sw.checked);
+    const sr = $("#"+k.search); if (sr) sr.oninput = ()=> kaRenderApps(k);
+  });
+  const kanR = $("#btnNotifKaRefresh"); if (kanR) kanR.onclick = ()=> loadKeepAlive(KA_KINDS[0]);
+  const kanS = $("#btnNotifKaSave");    if (kanS) kanS.onclick = ()=> saveKeepAlive(KA_KINDS[0]);
+  const kaaR = $("#btnA11yKaRefresh"); if (kaaR) kaaR.onclick = ()=> loadKeepAlive(KA_KINDS[1]);
+  const kaaS = $("#btnA11yKaSave");    if (kaaS) kaaS.onclick = ()=> saveKeepAlive(KA_KINDS[1]);
+  // 内置应用（system/app/*）默认保活
+  const bnr = $("#btnBuiltinRefresh"); if (bnr) bnr.onclick = loadBuiltinApps;
+  // Shizuku 守护
+  const szk = $("#swShizukuKeepAlive"); if (szk) szk.onchange = ()=> setShizukuSwitch("shizuku_keepalive_enable", szk.checked);
+  const szd = $("#swShizukuDetect"); if (szd) szd.onchange = ()=> setShizukuSwitch("shizuku_detect_enable", szd.checked);
+  const szc = $("#swShizukuCleanStarter"); if (szc) szc.onchange = ()=> setShizukuSwitch("shizuku_detect_clean_starter", szc.checked);
+  const szr = $("#btnShizukuRefresh"); if (szr) szr.onclick = loadShizuku;
+  const szs = $("#btnShizukuScan"); if (szs) szs.onclick = scanShizukuResidue;
+  $$(".tab").forEach(t=> t.onclick = ()=> switchTab(t.dataset.tab));
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  bind();
+  const h = (location.hash || "").replace("#", "");
+  switchTab(TAB_TITLES[h] ? h : "home");
+  load();
+});
+</script>
+</body>
+</html>
