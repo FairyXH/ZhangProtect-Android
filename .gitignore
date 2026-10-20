@@ -6,7 +6,7 @@
 *.apk
 
 # Magisk release packages
-*.zip
+ZhangProtect-Android.zip
 
 # Build output directories
 build/
@@ -34,6 +34,7 @@ local.properties
 *.tmp
 *.temp
 *.log
+*.baiduyun.uploading.cfg
 
 # Editor files
 .vscode/
@@ -62,7 +63,6 @@ __pycache__/
 # Large files
 # =========================
 
-*.7z
 *.rar
 *.tar
 *.gz
